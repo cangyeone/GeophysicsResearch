@@ -2,12 +2,12 @@
 """
 Created on Mon Jan  9 09:16:54 2017
 
-@author: LLL
+@author: Cangye
 """
 
 import numpy as np
 from scipy import special
-from scipy import integrate
+#from scipy import integrate
 ctype='complex64'
 class WaveNumber():
     def __init__(self):
@@ -15,11 +15,11 @@ class WaveNumber():
     def GetPar(self):
         self.par=[]
         for ii in range(10):
-            self.par.append([2,2,1,1])
+            self.par.append([np.sqrt(2)*1e6,2*1e6,1*1e18,1])
             #stands for lambda mu rho height
     def GetMatrixE(self,omega,k):
         def GetV(a):
-            aa=np.sqrt(a[0]+2*a[1]/a[2],dtype=ctype)
+            aa=np.sqrt((a[0]+2*a[1])/a[2],dtype=ctype)
             bb=np.sqrt(a[1]/a[2],dtype=ctype)
             r =np.sqrt(k*k-omega*omega/aa/aa,dtype=ctype)
             v =np.sqrt(k*k-omega*omega/bb/bb,dtype=ctype)
@@ -29,6 +29,7 @@ class WaveNumber():
         self.E_SH=[]
         self.E_PV=[]
         self.K_rv=[]
+        self.ForInvE=[]
         for itr in range(len(self.par_v)):
             a=self.par_v[itr][0]
             b=self.par_v[itr][1]
@@ -43,6 +44,44 @@ class WaveNumber():
                                        ,[-2*a*u*k*r,    -b*u*x,2*a*u*k*r,     b*u*x]
                                        ,[    -a*u*x,-2*b*u*k*v,   -a*u*x,-2*b*u*k*v]],dtype=ctype))
             self.K_rv.append(np.array([r,v],dtype=ctype))
+        
+            if(itr==0):
+                invmte=np.array( [[-2*k*v,      x]
+                                 ,[     x,-2*k*r]])
+                cnt=x*x-4*k*k*r*v
+                invme=np.divide(invmte,cnt)
+                apd=np.diag([-1/a/u,-1/b/u])
+                self.E0Inv=(np.dot(apd,invme))
+        for itr in range(len(self.par)-1):
+            a1=self.par_v[itr][0]
+            b1=self.par_v[itr][1]
+            r1=self.par_v[itr][2]
+            v1=self.par_v[itr][3]
+            u1=self.par[  itr][1]
+            a2=self.par_v[itr+1][0]
+            b2=self.par_v[itr+1][1]
+            r2=self.par_v[itr+1][2]
+            v2=self.par_v[itr+1][3]
+            u2=self.par  [itr+1][1]
+            wb1=np.square(omega*omega/b1/b1)
+            wb2=np.square(omega*omega/b2/b2)
+            umu=u1-u2
+            Amp1=np.diag([1/a1,1/b1,1/a2,1/b2])
+            Amp2=np.diag([a2,b2,a1,b1])
+            Cgr=np.diag([1+0j,1+0j,1+0j,1+0j])
+            Cgr[3,0]=Cgr[2,1]=2*k*umu
+            Ctl1=np.array( [[     k,    v1,               -k,              -v2]
+                          ,[    r1,     k,               r2,                k]
+                          ,[     0,u1*wb1,       2*k*r2*umu, 2*k*k*umu+u2*wb2]
+                          ,[u1*wb1,     0,-2*k*k*umu-u2*wb2,      -2*k*umu*v2]])
+            
+            Ctl2=np.array( [[     k,    v2,               -k,              -v1]
+                          ,[    r2,     k,               r1,                k]
+                          ,[     0,u2*wb2,      -2*k*r2*umu,-2*k*k*umu+u2*wb1]
+                          ,[u2*wb2,     0,2*k*k*umu-u1*wb1,       2*k*umu*v1]])
+            ccc=np.dot(np.dot(np.linalg.inv(Ctl1),Cgr),Ctl2)
+            self.ForInvE.append(np.dot(np.dot(Amp1,ccc),Amp2))
+
     def GetMRT(self):
         emh_z=np.zeros([2,2],dtype=ctype)
         emv_z=np.zeros([4,4],dtype=ctype)
@@ -77,19 +116,10 @@ class WaveNumber():
                 emv_k[2:4,2:4]=np.diag([0,0])
             
             emh_inv=np.linalg.inv(emh_z)
-            emv_inv=np.linalg.inv(emv_z)
-            
-            if(np.abs(np.sum(np.dot(emv_inv,emv_z)))>5):
-                print("Ill contidioned matrix!")
-                #print(emv_z)
-                print("line1/line4:")
-                print(np.divide(emv_z[0,:],emv_z[3,:]))
-                #print("-----------------")
-                #print(np.dot(emv_inv,emv_z))
 
                 
             self.MRT_h.append(np.dot(np.dot(emh_inv,emh_c),emh_k))
-            self.MRT_v.append(np.dot(np.dot(emv_inv,emv_c),emv_k))
+            self.MRT_v.append(np.dot(self.ForInvE[itr],emv_k))
 
 
     def GetGRT(self,ns):
@@ -102,7 +132,7 @@ class WaveNumber():
         Eh22=self.E_SH[0][1:2,1:2]
         Kh=np.diag(-np.exp([-self.K_rv[0][1]*self.par[0][3]]))
         Rh_t=np.dot(np.dot(Eh21inv,Eh22),Kh)
-        Ev21inv=np.multiply(np.linalg.inv(self.E_PV[0][2:4,0:2]),-1)
+        Ev21inv=np.multiply(self.E0Inv,-1)
         Ev22=self.E_PV[0][2:4,2:4]
         Kv=np.diag(-np.exp(np.exp([-self.K_rv[0][0]*self.par[0][3],
                                    -self.K_rv[0][1]*self.par[0][3]])))
@@ -132,8 +162,7 @@ class WaveNumber():
             IRRvinv=np.linalg.inv(np.subtract(Iv,np.dot(Rv_du,Rv_t)))
             Tv_t=np.dot(IRRvinv,Tv_u)
             Rv_t=np.add(Rv_ud,np.dot(np.dot(Tv_d,Rv_t),Tv_t))
-            #print(IRRvinv)
-            #print(self.MRT_v[itr])
+
             self.Th.append(Th_t)
             self.Rh.append(Rh_t)
             self.Tv.append(Tv_t)
@@ -142,10 +171,7 @@ class WaveNumber():
         Tv_t=np.zeros([2,2])
         Rh_t=np.zeros([1,1])
         Rv_t=np.zeros([2,2])
-        #self.Th.append(Th_t)
-        #self.Rh.append(Rh_t)
-        #self.Tv.append(Tv_t)
-        #self.Rv.append(Rv_t)
+
         for itr in range(len(self.MRT_h)-1,ns-1,-1):
             Th_d =self.MRT_h[itr][0:1,0:1]
             Th_u =self.MRT_h[itr][1:2,1:2]
@@ -228,25 +254,6 @@ class WaveNumber():
         s2=np.multiply(buaw*k/r,np.array([     k*b,       -a*r],dtype=ctype))
         s1=np.multiply(buaw/v,np.array(  [-2*k*v*b,(k*k+v*v)*a],dtype=ctype))
         s0=np.multiply(buaw,np.array(    [     r*b,       -k*a],dtype=ctype))
-        """
-        x=0
-        y=1
-        z=2
-        FSH2=[0,0]
-        FSH1=[0,0]
-        FPS2=[0,0]
-        FPS1=[0,0]
-        FSH2[0]=(( mt[y][y]-mt[x][x])*1j-2*mt[x][y])/4
-        FSH2[1]=(-(mt[y][y]-mt[x][x])*1j-2*mt[x][y])/4
-        FSH1[0]=(  mt[y][z]+mt[x][z]*1j)/2
-        FSH1[1]=( -mt[y][z]+mt[x][z]*1j)/2
-        FPS2[0]=(( mt[x][x]-mt[y][y])-mt[x][y]*2j)/4
-        FPS2[1]=(( mt[x][x]-mt[y][y])+mt[x][y]*2j)/4
-        FPS1[0]=(  mt[y][z]*1j-mt[x][z])/2
-        FPS1[0]=(  mt[y][z]*1j+mt[x][z])/2
-        FPS01  =(  mt[x][x]+mt[y][y])/2
-        FPS02  =   mt[z][z]
-        """
         Yh,Yv,Ehu,Ehd,Evu,Evd=self.GetY(j,z,ns)
         ERh =np.dot(Ehu,self.Rh[ns])
         Ih=np.diag([1])
@@ -307,7 +314,7 @@ class WaveNumber():
                 #print(k,omega)
                 #kr1,kr2,kr3,kr4,ko1,ko2,kz1,kz2,kz3,kz4=(0j,0j,0j,0j,0j,0j,0j,0j,0j,0j)
             return [kr1[0,0],kr2[0,0],kr3,kr4,ko1[0,0],ko2[0,0],kz1,kz2,kz3,kz4]
-        kint=np.linspace(0.001,20*np.sqrt(1.5),2000,dtype=ctype)
+        kint=np.linspace(0.001,30*np.sqrt(1.5),5000,dtype=ctype)
 
         kl=np.array(list(map(FormLine,kint)),dtype=ctype)
       
@@ -328,12 +335,12 @@ class WaveNumber():
             ur,uo,uz=self.IntInK(j,z,ns,omega[w],theta,r,mt,fm[w])
             return [ur,uo,uz]
         ary=list(map(FDget,range(len(wave))))
-        return np.abs(np.fft.ifft(np.transpose(ary),axis=1))
+        return np.real(np.fft.ifft(np.transpose(ary),axis=1))
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     aa=WaveNumber()
     mt=[[1,1,1],[1,1,1],[1,1,1]]
-    wave=np.linspace(0,0,20)
+    wave=np.linspace(0,0,100)
     wave[10]=100
     ls=aa.FourTrans(wave,1,0.5,4,1,1,mt)
     plt.subplot(4,1,1)
