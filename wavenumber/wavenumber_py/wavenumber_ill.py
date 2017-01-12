@@ -15,7 +15,7 @@ class WaveNumber():
     def GetPar(self):
         self.par=[]
         for ii in range(10):
-            self.par.append([np.sqrt(2)*1e6,2*1e6,1*1e18,1])
+            self.par.append([17.79e9*1e6,17e9*1e6,4650*1e18,0.005])
             #stands for lambda mu rho height
     def GetMatrixE(self,omega,k):
         def GetV(a):
@@ -303,7 +303,6 @@ class WaveNumber():
         return (kr1,kr2,kr3,kr4,ko1,ko2,kz1,kz2,kz3,kz4)
     def IntInK(self,j,z,ns,omega,theta,r,mt,amp):
         def FormLine(k):
-            
             self.GetPar()
             self.GetMatrixE(omega,k)
             self.GetMRT()
@@ -342,7 +341,7 @@ if __name__ == '__main__':
     mt=[[1,1,1],[1,1,1],[1,1,1]]
     wave=np.linspace(0,0,100)
     wave[10]=100
-    ls=aa.FourTrans(wave,1,0.5,4,1,1,mt)
+    ls=aa.FourTrans(wave,1,0.5,4,1,0.005,mt)
     plt.subplot(4,1,1)
     plt.plot(wave)
     plt.text(0,max(wave)*0.5,r"Wave")
