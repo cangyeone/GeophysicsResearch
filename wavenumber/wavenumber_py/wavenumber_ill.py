@@ -15,7 +15,7 @@ class WaveNumber():
     def GetPar(self):
         self.par=[]
         for ii in range(10):
-            self.par.append([17.79e9*1e6,17e9*1e6,4650*1e18,0.005])
+            #1000m=1km=0.001
             #stands for lambda mu rho height
     def GetMatrixE(self,omega,k):
         def GetV(a):
@@ -51,7 +51,9 @@ class WaveNumber():
                 cnt=x*x-4*k*k*r*v
                 invme=np.divide(invmte,cnt)
                 apd=np.diag([-1/a/u,-1/b/u])
+                #解决矩阵病态性问题1
                 self.E0Inv=(np.dot(apd,invme))
+        #解决矩阵病态性问题2
         for itr in range(len(self.par)-1):
             a1=self.par_v[itr][0]
             b1=self.par_v[itr][1]
@@ -313,7 +315,7 @@ class WaveNumber():
                 #print(k,omega)
                 #kr1,kr2,kr3,kr4,ko1,ko2,kz1,kz2,kz3,kz4=(0j,0j,0j,0j,0j,0j,0j,0j,0j,0j)
             return [kr1[0,0],kr2[0,0],kr3,kr4,ko1[0,0],ko2[0,0],kz1,kz2,kz3,kz4]
-        kint=np.linspace(0.001,30*np.sqrt(1.5),5000,dtype=ctype)
+        kint=np.linspace(0.001,30*np.sqrt(1.5),500,dtype=ctype)
 
         kl=np.array(list(map(FormLine,kint)),dtype=ctype)
       
@@ -327,21 +329,31 @@ class WaveNumber():
         return (ur,uo,uz)
     def FourTrans(self,wave,j,z,ns,theta,r,mt):
         fm=np.fft.fft(wave)
-        omega=np.linspace(0.001,1/0.01,len(wave),dtype=ctype)
         def FDget(w):
             if(w%10==0):
                 print("omega dot %6d/%6d"%(w,len(wave)))
             ur,uo,uz=self.IntInK(j,z,ns,omega[w],theta,r,mt,fm[w])
             return [ur,uo,uz]
         ary=list(map(FDget,range(len(wave))))
-        return np.real(np.fft.ifft(np.transpose(ary),axis=1))
+        ary=np.transpose(ary)
+        #ary[0,int()]
+        return np.real(np.fft.ifft(ary,axis=1))
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     aa=WaveNumber()
+    #定义地震距张量
+    #Define 
     mt=[[1,1,1],[1,1,1],[1,1,1]]
-    wave=np.linspace(0,0,100)
-    wave[10]=100
-    ls=aa.FourTrans(wave,1,0.5,4,1,0.005,mt)
+    #定义波形
+    wave=np.linspace(0,0,300)
+    per=10
+    f0=4
+    Tc=1
+    for ii in range(10):
+        t=((ii-per))/per
+        wave[ii+5]=(1+np.cos(2.*np.pi*(t-Tc/2.)/Tc))*np.cos(2.*np.pi*f0*(t-Tc/2.))/2.;
+    ls=aa.FourTrans(wave,1,0.00,4,1,0.002,mt)
+    #画图
     plt.subplot(4,1,1)
     plt.plot(wave)
     plt.text(0,max(wave)*0.5,r"Wave")
