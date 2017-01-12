@@ -1,0 +1,1 @@
+This dir is used to contain the scripts of the method of finite-element
