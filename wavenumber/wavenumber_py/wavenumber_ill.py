@@ -16,6 +16,7 @@ class WaveNumber():
         self.par=[]
         for ii in range(10):
             #1000m=1km=0.001
+            self.par.append([17.79e9*1e6,17e9*1e6,4650*1e18,0.003])
             #stands for lambda mu rho height
     def GetMatrixE(self,omega,k):
         def GetV(a):
@@ -329,6 +330,7 @@ class WaveNumber():
         return (ur,uo,uz)
     def FourTrans(self,wave,j,z,ns,theta,r,mt):
         fm=np.fft.fft(wave)
+        omega=np.linspace(0.001,50,len(wave),dtype=ctype)
         def FDget(w):
             if(w%10==0):
                 print("omega dot %6d/%6d"%(w,len(wave)))
