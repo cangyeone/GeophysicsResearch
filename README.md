@@ -11,4 +11,5 @@ Here are some general scripts to do research of geophysics
 * FDM
 
 > To run the python scripts ANCONDA is recomended to be installed
-**cangye@aliyun.com**
+
+- **cangye@aliyun.com**
