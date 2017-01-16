@@ -6,17 +6,7 @@ Created on Wed Dec 14 16:39:10 2016
 
 #SAC File Read
 
-"""
-============= =========== ===================
-头段区          第一数据区     第二数据区（可选）
-============= =========== ===================
-起始字: 0       起始字：158   起始字：158+NPTS
-长度(字): 158   长度：NPTS   长度: NPTS
-内容见下表       -因变量      -自变量(非等间隔数据)
-           -振幅        -相位
-           -实部        -虚部
-============= =========== ===================
-"""
+
 
 import struct
 class SacStreamIO():
@@ -108,6 +98,8 @@ class SacPlot(SacStreamIO):
 
         
 if __name__ == '__main__':
+    print("Do not run this file directily!")
+    print("Try to run simple file:")
     import os
     from datasketch import WeightedMinHashGenerator 
     v1 = [1, 3, 4, 5, 6, 7, 8, 9, 10, 4]

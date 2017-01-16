@@ -7,6 +7,7 @@ Created on Mon Jan  9 09:16:54 2017
 
 import numpy as np
 from scipy import special
+import tensorflow as tf
 #from scipy import integrate
 ctype='complex64'
 class WaveNumber():
@@ -316,7 +317,7 @@ class WaveNumber():
                 #print(k,omega)
                 #kr1,kr2,kr3,kr4,ko1,ko2,kz1,kz2,kz3,kz4=(0j,0j,0j,0j,0j,0j,0j,0j,0j,0j)
             return [kr1[0,0],kr2[0,0],kr3,kr4,ko1[0,0],ko2[0,0],kz1,kz2,kz3,kz4]
-        kint=np.linspace(0.001,30*np.sqrt(1.5),500,dtype=ctype)
+        kint=np.linspace(0.001,30*np.sqrt(1.5),100,dtype=ctype)
 
         kl=np.array(list(map(FormLine,kint)),dtype=ctype)
       
