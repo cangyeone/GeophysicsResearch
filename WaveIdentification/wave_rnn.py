@@ -14,16 +14,18 @@ class WaveIdentifyTrain():
         self.sess=tf.Session()
         self.data_patch_len=784
         self.data_y_len=10
-        self.w1_shape=[784,784*2]
-        self.w2_shape=[784*2,784]
+        self.w1_shape=[784,784]
+        self.w2_shape=[784,784]
         self.conv1_shape=[4,1,8]
         self.conv2_shape=[4,8,32]
         self.x=tf.placeholder(tf.float32,shape=[None,self.data_patch_len])
         self.y=tf.placeholder(tf.float32,shape=[None,self.data_y_len])
 
+        x1d_w1=self.my_weigh(self.w1_shape)
+        x1d_b=self.my_weigh([self.w1_shape[1]])
+        x1d=tf.nn.relu(tf.matmul(self.x,x1d_w1)+x1d_b)
 
-        x_3d=tf.reshape(self.x,[-1,self.data_patch_len,1])
-        
+        x_3d=tf.reshape(x1d,[-1,self.data_patch_len,1])
         
         x_w1=self.my_weigh(self.conv1_shape)
         x_b1=self.my_bias([self.conv1_shape[2]])
