@@ -4,7 +4,7 @@ Created on Mon Jan 16 18:34:36 2017
 
 @author: LLL
 """
-
+import os
 import numpy as np
 from scipy import special
 import tensorflow as tf
@@ -14,18 +14,16 @@ class WaveIdentifyTrain():
         self.sess=tf.Session()
         self.data_patch_len=784
         self.data_y_len=10
+        self.data_chenel_n=1
         self.w1_shape=[784,784]
         self.w2_shape=[784,784]
-        self.conv1_shape=[4,1,8]
+        self.conv1_shape=[4,self.data_chenel_n,8]
         self.conv2_shape=[4,8,32]
-        self.x=tf.placeholder(tf.float32,shape=[None,self.data_patch_len])
+
+    def init_var(self):
+        self.x=tf.placeholder(tf.float32,shape=[None,self.data_patch_len,self.data_chenel_n])
         self.y=tf.placeholder(tf.float32,shape=[None,self.data_y_len])
-
-        x1d_w1=self.my_weigh(self.w1_shape)
-        x1d_b=self.my_weigh([self.w1_shape[1]])
-        x1d=tf.nn.relu(tf.matmul(self.x,x1d_w1)+x1d_b)
-
-        x_3d=tf.reshape(x1d,[-1,self.data_patch_len,1])
+        x_3d=tf.reshape(self.x,[-1,self.data_patch_len,self.data_chenel_n])
         
         x_w1=self.my_weigh(self.conv1_shape)
         x_b1=self.my_bias([self.conv1_shape[2]])
@@ -79,19 +77,41 @@ class WaveIdentifyTrain():
     def validate(self,data):
         return self.sess.run(self.acc,feed_dict={self.x: data[0], self.y: data[1], self.kp_prb:1})
 
+    def saver(self,step):
+        self.sv=tf.train.Saver()
+        try:
+            self.sv.save(self.sess,'var_back/model',global_step=step)
+        except:
+            os.mkdir('var_back')
+            self.sv.save(self.sess,'var_back/model',global_step=step)
+    def restore(self,step=-1):
+        if(step>0):
+            self.sv.restore(self.sess,'var_back/model-'+str(step))
+        else:
+            self.sv.recover_last_checkpoints('var_back/')
+        
+        
 if __name__ == '__main__':
     print("Do not run this file directily!")
     print("Try to run simple file:")
     from tensorflow.examples.tutorials.mnist import input_data
     mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
     aa=WaveIdentifyTrain()
-    for i in range(2000):
+    aa.init_var()
+    import matplotlib.pyplot as plt
+    for i in range(100):
         batch = mnist.train.next_batch(50)
-        aa.train(batch)
+        #plt.clf()
+        #plt.imshow(np.reshape(batch[0][5],[28,28]),cmap=plt.get_cmap('Blues'))
+        trans=np.reshape(batch[0],[-1,784,1])
+        aa.train([trans,batch[1]])
         if(i%10==9):
-            print("train step:%d accuracy:%f"%(i,aa.validate([mnist.test.images,mnist.test.labels])))
+            print("train step:%d accuracy:%f"%(i,aa.validate([np.reshape(mnist.test.images,[-1,784,1]),mnist.test.labels])))
+            #aa.saver(i)
             
-        
+    #aa.restore(109)
+    #print("restore test")
+    #print(aa.validate([mnist.test.images,mnist.test.labels]))
 
 
 #con_x_1d=tf.nn.conv1d(x1d,filters=x1d_cov,stride=1, padding='SAME')
