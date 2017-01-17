@@ -1,11 +1,5 @@
 # GeophysicsResearch
 
-[![Language]](c)
-[![Language]](python)
-[![Build Status]]
-[![GitHub release]]
-[![GitHub commits]]
-
 Here are some general scripts to do research of geophysics
 
 ##**Data processing method**
