@@ -99,7 +99,7 @@ if __name__ == '__main__':
     aa=WaveIdentifyTrain()
     aa.init_var()
     import matplotlib.pyplot as plt
-    for i in range(100):
+    for i in range(2500):
         batch = mnist.train.next_batch(50)
         #plt.clf()
         #plt.imshow(np.reshape(batch[0][5],[28,28]),cmap=plt.get_cmap('Blues'))

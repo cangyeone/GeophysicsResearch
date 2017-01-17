@@ -33,25 +33,30 @@ class SacStreamIO():
         self.HRN=1
         self.lat=out[31]
         self.lon=out[32]
-
+        self.tn=out[111:121]
     def ReadData(self):
         if(self.GDN==1):
             print('Data has read twice!')
             return
         import numpy as np
+        self.data=[]
         if(self.leven==1):
+            if(self.nxsize!=-12345):
+                for itr in range(self.nxsize*self.nysize):
+                    dataBy=self.file.read(4*self.npts)
+                    self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
+            else:
+                dataBy=self.file.read(4*self.npts)
+                self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
+        else:
             dataBy=self.file.read(4*self.npts)
-            self.yVect=np.array(struct.unpack('<'+str(self.npts)+'f',dataBy))
-            self.xVect=np.linspace(0,self.npts*self.delta,self.npts)
-        elif(self.leven==0):
-            dataBx=self.file.read(4*self.npts)
+            self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
             dataBy=self.file.read(4*self.npts)
-            self.xVect=np.array(struct.unpack('<'+str(self.npts)+'f',dataBx))
-            self.yVect=np.array(struct.unpack('<'+str(self.npts)+'f',dataBy))
+            self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
         self.GDN=1
     def DataDetrend(self):
         import scipy.signal as ssg
-        self.yVect=ssg.detrend(self.yVect)
+        self.data[0]=ssg.detrend(self.data[0])
     def ViewHeadData(self):
         for ii in range(14):
             ii5=ii*5
@@ -60,7 +65,7 @@ class SacStreamIO():
             ii5=ii*5
             print("Line %2d :%16d %16d %16d %16d %16d"%(ii,self.head[ii5],self.head[ii5+1],self.head[ii5+2],self.head[ii5+3],self.head[ii5+4]))
         for ii in range(24,32):
-            ii5=ii*3
+            ii5=(ii)*3
             print("Line %2d :%16d %16d %16d"%(ii,self.head[ii5],self.head[ii5+1],self.head[ii5+2]))
     def ViewData(self):
         print("%10.3f %10.3f %10.3f\n...(%d dots)...\n%10.3f %10.3f %10.3f"%(self.yVect[0],self.yVect[1],self.yVect[2],self.npts,self.yVect[-3],self.yVect[-2],self.yVect[-1]))
