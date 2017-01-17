@@ -15,7 +15,9 @@ Here are some general scripts to do research of geophysics
 
 > To run the python scripts ANCONDA is recomended to be installed
 
-http://www.geophyx.com<br/>
+
 https://zhuanlan.zhihu.com/geophys
 
+
 - **cangye@aliyun.com**
+http://www.geophyx.com
