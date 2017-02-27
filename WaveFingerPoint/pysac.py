@@ -33,7 +33,7 @@ class SacStreamIO():
         self.HRN=1
         self.lat=out[31]
         self.lon=out[32]
-
+        print(self.head)
     def ReadData(self):
         if(self.GDN==1):
             print('Data has read twice!')

@@ -342,14 +342,15 @@ class WaveNumber():
         #ary[0,int()]
         return np.real(np.fft.ifft(ary,axis=1))
 if __name__ == '__main__':
+    from mpl_toolkits.mplot3d import Axes3D
     import matplotlib.pyplot as plt
     aa=WaveNumber()
     #定义地震距张量
     #Define 
     mt=[[1,1,1],[1,1,1],[1,1,1]]
     #定义波形
-    wave=np.linspace(0,0,300)
-    per=10
+    wave=np.linspace(0,0,2000)
+    per=150
     f0=4
     Tc=1
     for ii in range(10):
@@ -357,15 +358,10 @@ if __name__ == '__main__':
         wave[ii+5]=(1+np.cos(2.*np.pi*(t-Tc/2.)/Tc))*np.cos(2.*np.pi*f0*(t-Tc/2.))/2.;
     ls=aa.FourTrans(wave,1,0.00,4,1,0.002,mt)
     #画图
-    plt.subplot(4,1,1)
-    plt.plot(wave)
-    plt.text(0,max(wave)*0.5,r"Wave")
-    plt.subplot(4,1,2)
-    plt.plot(ls[0])
-    plt.text(0,ls[0][0],r"Component:r")
-    plt.subplot(4,1,3)
-    plt.plot(ls[1])
-    plt.text(0,ls[1][0],r"Component:$\theta$")
-    plt.subplot(4,1,4)
-    plt.plot(ls[2])
-    plt.text(0,ls[2][0],r"Component:z")
+    
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    #ax.plot(wave,wave,wave,color='cornflowerblue',lw=2,alpha=0.5)
+    ax.plot(ls[0],ls[1],ls[2],color='b',lw=2,alpha=0.5)
+    plt.show()
+ 

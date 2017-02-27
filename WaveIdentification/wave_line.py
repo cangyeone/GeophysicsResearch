@@ -13,7 +13,7 @@ class WaveIdentifyTrain():
     def __init__(self):
         self.sess=tf.Session()
         self.data_patch_len=784
-        self.data_y_len=10
+        self.data_y_len=1
         self.data_chenel_n=1
         self.w1_shape=[784,784]
         self.w2_shape=[784,784]
@@ -22,8 +22,12 @@ class WaveIdentifyTrain():
 
     def init_var(self):
         self.x=tf.placeholder(tf.float32,shape=[None,self.data_patch_len,self.data_chenel_n])
-        self.y=tf.placeholder(tf.float32,shape=[None,self.data_y_len])
+        self.y=tf.placeholder(tf.float32,shape=[None,10])
         x_3d=tf.reshape(self.x,[-1,self.data_patch_len,self.data_chenel_n])
+        
+        
+        tfcst=tf.constant([0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9])
+        fl=self.y*tfcst
         
         x_w1=self.my_weigh(self.conv1_shape)
         x_b1=self.my_bias([self.conv1_shape[2]])
@@ -50,19 +54,19 @@ class WaveIdentifyTrain():
         fc_b1=self.my_bias([self.data_y_len])
         fc_wb1=tf.matmul(x_drop,fc_w1)+fc_b1
         
-        result=tf.nn.softmax(fc_wb1)
+        result=tf.nn.relu(fc_wb1)
         
-        cross_entropy=-tf.reduce_sum(self.y*tf.log(result))
-        self.train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+        self.cross_entropy=tf.abs(fl-result)
+        self.train_step = tf.train.AdamOptimizer(1e-4).minimize(self.cross_entropy)
         #self.train_step=tf.train.GradientDescentOptimizer()
         self.sess.run(tf.global_variables_initializer())
         
-        validate=tf.equal(tf.argmax(result,1),tf.argmax(self.y,1))
+        validate=tf.abs(fl-result)
         self.acc=tf.reduce_mean(tf.cast(validate,'float'))
         #print(fc1_len)
         #print(np.shape(self.sess.run(result,feed_dict={self.x: np.zeros([10,784]),self.y: np.zeros([10,10]), self.kp_prb: 0.5})))
     def my_conv_1d(self,data,flt):
-        return tf.nn.conv1d(data,filters=flt,stride=1, padding='SAME')
+        return tf.nn.conv1d(data,filters=flt,stride=0.5, padding='SAME')
     def my_bias(self,shape):
         init=tf.constant(0.1,shape=shape)
         return tf.Variable(init)
@@ -73,7 +77,7 @@ class WaveIdentifyTrain():
         return tf.nn.pool(data,window_shape=[1],pooling_type='MAX',strides=[1],padding='SAME')
     
     def train(self,data):
-        return self.sess.run(self.train_step,feed_dict={self.x: data[0], self.y: data[1], self.kp_prb:0.5})
+        return self.sess.run(self.cross_entropy,feed_dict={self.x: data[0], self.y: data[1], self.kp_prb:0.5})
     def validate(self,data):
         return self.sess.run(self.acc,feed_dict={self.x: data[0], self.y: data[1], self.kp_prb:1})
 
@@ -104,7 +108,7 @@ if __name__ == '__main__':
         #plt.clf()
         #plt.imshow(np.reshape(batch[0][5],[28,28]),cmap=plt.get_cmap('Blues'))
         trans=np.reshape(batch[0],[-1,784,1])
-        aa.train([trans,batch[1]])
+        print(aa.train([trans,batch[1]]))
         if(i%10==9):
             print("train step:%d accuracy:%f"%(i,aa.validate([np.reshape(mnist.test.images,[-1,784,1]),mnist.test.labels])))
             #aa.saver(i)
