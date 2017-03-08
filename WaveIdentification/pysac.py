@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Sat Feb 25 19:26:51 2017
+
+@author: LLL
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Wed Dec 14 16:39:10 2016
 @author: Cangye
 """
@@ -9,13 +16,45 @@ Created on Wed Dec 14 16:39:10 2016
 
 
 import struct
+import xdrlib
+import ctypes
+
 class SacStreamIO():
     def __init__(self,fileName,mode="rb"):
         self.HRN=0
         self.GDN=0
         self.file=open(fileName,mode)
-        self.ReadHead()
-        self.ReadData()
+        if(mode=="rb"):
+            self.ReadHead()
+            self.ReadData()
+            self.file.close()
+        
+    def WriteHead(self):
+        self.fileHeadB=[0.009999999776482582, -399.86651611328125, 424.1824951171875, -12345.0, -12345.0, 9670.0, 9700.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, 31.569414138793945, 103.42683410644531, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, 0.3598167896270752, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, 2015, 324, 0, 0, 0, 0, 6, -12345, -12345, 3001, -12345, -12345, -12345, -12345, -12345, 1, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, 1, 1, 1, 1, 0, 2314885531121513587, 2314908706781933869, 2314885530818453536, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314885530818453594, 236111107967183, 2314908706781933869, 2314908706781933869]
+        self.file.seek(0,0)
+        self.fileHeadB[79]=self.npts
+        buffSize=struct.calcsize('<70f40i24q')
+        outhead=ctypes.create_string_buffer(buffSize)
+        fmt=[['<f',4] for it in range(70)]
+        fmt.extend([['<i',4] for it in range(40)])
+        fmt.extend([['<q',8] for it in range(24)])
+        offset=0
+        for ch in range(len(fmt)):
+            struct.pack_into(fmt[ch][0],outhead,offset,self.fileHeadB[ch])
+            offset=offset+fmt[ch][1]
+        self.file.write(outhead)
+    def WriteData(self,data):
+        self.npts=len(data)
+        self.WriteHead()
+        buffSize=struct.calcsize('<'+str(self.npts)+'f')
+        outdata=ctypes.create_string_buffer(buffSize)
+        fmt=[["<f",itr*4] for itr in range(self.npts)]
+        it=0
+        for ch in fmt:
+            struct.pack_into(ch[0],outdata,ch[1],data[it])
+            it=it+1
+        self.file.write(outdata)
+    def CleanFile(self):
         self.file.close()
     def ReadHead(self):
         self.file.seek(0,0)
@@ -33,30 +72,25 @@ class SacStreamIO():
         self.HRN=1
         self.lat=out[31]
         self.lon=out[32]
-        self.tn=out[111:121]
     def ReadData(self):
         if(self.GDN==1):
             print('Data has read twice!')
             return
         import numpy as np
-        self.data=[]
         if(self.leven==1):
-            if(self.nxsize!=-12345):
-                for itr in range(self.nxsize*self.nysize):
-                    dataBy=self.file.read(4*self.npts)
-                    self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
-            else:
-                dataBy=self.file.read(4*self.npts)
-                self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
-        else:
             dataBy=self.file.read(4*self.npts)
-            self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
+            self.yVect=np.array(struct.unpack('<'+str(self.npts)+'f',dataBy))
+            self.xVect=np.linspace(0,self.npts*self.delta,self.npts)
+            #self.yVect=xdrlib.Unpacker.unpack_float(dataBy)
+        elif(self.leven==0):
+            dataBx=self.file.read(4*self.npts)
             dataBy=self.file.read(4*self.npts)
-            self.data.append(np.array(struct.unpack('<'+str(self.npts)+'f',dataBy)))
+            self.xVect=np.array(struct.unpack('<'+str(self.npts)+'f',dataBx))
+            self.yVect=np.array(struct.unpack('<'+str(self.npts)+'f',dataBy))
         self.GDN=1
     def DataDetrend(self):
         import scipy.signal as ssg
-        self.data[0]=ssg.detrend(self.data[0])
+        self.yVect=ssg.detrend(self.yVect)
     def ViewHeadData(self):
         for ii in range(14):
             ii5=ii*5
@@ -65,7 +99,7 @@ class SacStreamIO():
             ii5=ii*5
             print("Line %2d :%16d %16d %16d %16d %16d"%(ii,self.head[ii5],self.head[ii5+1],self.head[ii5+2],self.head[ii5+3],self.head[ii5+4]))
         for ii in range(24,32):
-            ii5=(ii)*3
+            ii5=ii*3
             print("Line %2d :%16d %16d %16d"%(ii,self.head[ii5],self.head[ii5+1],self.head[ii5+2]))
     def ViewData(self):
         print("%10.3f %10.3f %10.3f\n...(%d dots)...\n%10.3f %10.3f %10.3f"%(self.yVect[0],self.yVect[1],self.yVect[2],self.npts,self.yVect[-3],self.yVect[-2],self.yVect[-1]))
@@ -103,41 +137,16 @@ class SacPlot(SacStreamIO):
 
         
 if __name__ == '__main__':
-    import os
-    from datasketch import WeightedMinHashGenerator 
-    v1 = [1, 3, 4, 5, 6, 7, 8, 9, 10, 4]
-    v2 = [1, 3, 4, 5, 2, 3, 8, 9, 10, 4]
-    fileName="st26_0826.z"
-    wmg = WeightedMinHashGenerator(len(v1),sample_size=4, seed=12)
-    wm1 = wmg.minhash(v1) # wm1 is of the type WeightedMinHash
-    wm2 = wmg.minhash(v2)
-    fileDot=open("st26_0826.zhash.hh")
-
-    fileDt=fileDot.readlines()
-    data=[]
-    for aa in fileDt:
-        data.append([float(ii.strip()) for ii in aa.split(',')])
-    tripDt=[[1,1,1,1,1]]
-    style=0
-    cont=0
-    for dt in data:
-        cct=0
-        wm1.hashvalues=[[dt[1],0],[dt[2],0],[dt[3],0],[dt[4],0]]
-        for td in tripDt:
-            wm2.hashvalues=[[td[1],0],[td[2],0],[td[3],0],[td[4],0]]
-            if(wm2.jaccard(wm1)>0.5):
-                cct=1
-                data[cont].append(td[5])
-                cont+=1
-                break
-        if(cct==1):
-            continue
-        style+=1
-        tripDt.append([dt[0],dt[1],dt[2],dt[3],dt[4],style])
-        data[cont].append(style)
-        cont+=1
-    os.makedirs('save_fig_sums5/')
-    SacPlot(fileName,data) 
+    print("Do not run this file directily!")
+    print("Try to run simple file:")
+    from scipy import fftpack
+    fileName="st02_cut.z"
+    sacFile=SacStreamIO(fileName,"rb")
+    data=sacFile.yVect
+    transData=fftpack.hilbert(data)
+    outFile=SacStreamIO(fileName+'out.z','wb')
+    outFile.WriteData(transData)
+        
         
         
         

@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Feb 25 19:26:51 2017
 
-@author: LLL
-"""
 
 # -*- coding: utf-8 -*-
 """
@@ -16,6 +11,9 @@ Created on Wed Dec 14 16:39:10 2016
 
 
 import struct
+import xdrlib
+import ctypes
+
 class SacStreamIO():
     def __init__(self,fileName,mode="rb"):
         self.HRN=0
@@ -26,17 +24,31 @@ class SacStreamIO():
             self.ReadData()
             self.file.close()
         
-    def WriteHead(self,npts):
+    def WriteHead(self):
         self.fileHeadB=[0.009999999776482582, -399.86651611328125, 424.1824951171875, -12345.0, -12345.0, 9670.0, 9700.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, 31.569414138793945, 103.42683410644531, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, 0.3598167896270752, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, -12345.0, 2015, 324, 0, 0, 0, 0, 6, -12345, -12345, 3001, -12345, -12345, -12345, -12345, -12345, 1, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, -12345, 1, 1, 1, 1, 0, 2314885531121513587, 2314908706781933869, 2314885530818453536, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314908706781933869, 2314885530818453594, 236111107967183, 2314908706781933869, 2314908706781933869]
         self.file.seek(0,0)
-        self.npts=self.fileHeadB[79]=npts
-        print(tuple(self.fileHeadB)[0:134])
-        outhead=struct.pack('<70f40i24q',tuple(self.fileHeadB)[0:134])
+        self.fileHeadB[79]=self.npts
+        buffSize=struct.calcsize('<70f40i24q')
+        outhead=ctypes.create_string_buffer(buffSize)
+        fmt=[['<f',4] for it in range(70)]
+        fmt.extend([['<i',4] for it in range(40)])
+        fmt.extend([['<q',8] for it in range(24)])
+        offset=0
+        for ch in range(len(fmt)):
+            struct.pack_into(fmt[ch][0],outhead,offset,self.fileHeadB[ch])
+            offset=offset+fmt[ch][1]
         self.file.write(outhead)
     def WriteData(self,data):
-        outdata=tuple(data)
-        xVect=struct.pack('<'+str(self.npts)+'f',outdata[0:self.npts])
-        self.file.write(xVect)
+        self.npts=len(data)
+        self.WriteHead()
+        buffSize=struct.calcsize('<'+str(self.npts)+'f')
+        outdata=ctypes.create_string_buffer(buffSize)
+        fmt=[["<f",itr*4] for itr in range(self.npts)]
+        it=0
+        for ch in fmt:
+            struct.pack_into(ch[0],outdata,ch[1],data[it])
+            it=it+1
+        self.file.write(outdata)
     def CleanFile(self):
         self.file.close()
     def ReadHead(self):
@@ -64,6 +76,7 @@ class SacStreamIO():
             dataBy=self.file.read(4*self.npts)
             self.yVect=np.array(struct.unpack('<'+str(self.npts)+'f',dataBy))
             self.xVect=np.linspace(0,self.npts*self.delta,self.npts)
+            #self.yVect=xdrlib.Unpacker.unpack_float(dataBy)
         elif(self.leven==0):
             dataBx=self.file.read(4*self.npts)
             dataBy=self.file.read(4*self.npts)
@@ -121,8 +134,14 @@ class SacPlot(SacStreamIO):
 if __name__ == '__main__':
     print("Do not run this file directily!")
     print("Try to run simple file:")
+    from scipy import fftpack
     fileName="st02_cut.z"
-    SacStreamIO(fileName,"rb") 
+    sacFile=SacStreamIO(fileName,"rb")
+    data=sacFile.yVect
+    transData=fftpack.hilbert(data)
+    outFile=SacStreamIO(fileName+'out.z','wb')
+    outFile.WriteData(transData)
+        
         
         
         
