@@ -350,6 +350,8 @@ plt.plot(dts[0],color='b',lw=1,alpha=0.2)
 plt.plot(sig.resample(dtflt[0],np.shape(dt)[1]),color='cornflowerblue',lw=3)
 plt.plot(dt[0],color='orange',lw=1,alpha=0.5)
 """
+import matplotlib as mpl
+mpl.style.use('seaborn-darkgrid')
 plt.subplot(411)
 plt.plot(nzdata[1],color='b',lw=1,alpha=0.2)
 plt.plot(sig.resample(outdata[1],TN),color='cornflowerblue',lw=3)
@@ -370,9 +372,9 @@ b, a = signal.iirdesign([0.01, 0.15], [0.005, 0.17], 2, 40)
 out = signal.lfilter(b, a, data_noise[3])
 
 plt.subplot(414)
-plt.plot(data_noise[3],color='b',lw=1,alpha=0.2)
-plt.plot(sig.resample(out,TN),color='cornflowerblue',lw=3)
-plt.plot(data[3],color='orange',lw=1,alpha=0.5)
+plt.plot(data_noise[4],color='b',lw=1,alpha=0.2)
+plt.plot(sig.resample(outdata[4],TN),color='cornflowerblue',lw=3)
+plt.plot(data[4],color='orange',lw=1,alpha=0.5)
 """
 plt.figure(2)
 plt.plot(np.transpose(cvl1))
