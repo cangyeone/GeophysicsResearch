@@ -23,8 +23,7 @@ class GenData():
         #data=np.subtract(data,0.5)
         ariv=np.zeros([self.shape[0],1])
         if(numSubWave==0):
-            return self.data
-        
+            return self.data      
         for itrd in range(self.shape[0]):
             sbn=1+np.random.randint(numSubWave)
             for itr in range(sbn):
@@ -40,7 +39,7 @@ class GenData():
         mx=np.reshape(mx,[-1,1])
         self.data=np.multiply(np.divide(self.data,mx),0.2)
         #return ariv
-        
+        self.data=self.data+0.2
         return self.data
     def AddNoise(self,bl=0.5,tp='FX'):
         noise=np.random.random(self.shape)
@@ -61,12 +60,10 @@ class GenDataSin():
         ariv=np.zeros([self.shape[0],1])
         if(numSubWave==0):
             return self.data
-        
         for itrd in range(self.shape[0]):
             sbn=1+np.random.randint(numSubWave)
             for itr in range(sbn):
-                f0=50+np.random.random(1)[0]*50
-
+                f0=np.random.random(1)[0]*10
                 per=100
                 t=np.linspace(0,1,per)
                 wave=np.sin(f0*t)
@@ -76,6 +73,7 @@ class GenDataSin():
         mx=np.max(self.data,axis=1)
         mx=np.reshape(mx,[-1,1])
         self.data=np.multiply(np.divide(self.data,mx),0.0)
+        self.data=self.data+np.random.random(1)[0]*0.3+0.1
         #self.ndata=np.multiply(np.divide(self.data,mx),0.0)
         #return ariv
         
@@ -131,9 +129,9 @@ class FilterTrain():
         c2s=[4,8,16]
         c3s=[4,16,1]
         
-        pool_type='MAX'
-        pool_window=[4,2,2]
-        pool_stride=[4,2,1]
+        pool_type='AVG'
+        pool_window=[2,2,2]
+        pool_stride=[1,1,1]
         
         x = tf.placeholder(tf.float32,[50,N])
         y = tf.placeholder(tf.float32,[50,int(N/pool_stride[0]/pool_stride[1]/pool_stride[2])])
@@ -201,7 +199,7 @@ class FilterTrain():
         
         ce = tf.reduce_mean(tf.abs(data2-y))
         
-        train_step = tf.train.AdamOptimizer(1e-3).minimize(ce)
+        train_step = tf.train.AdamOptimizer(1e-2).minimize(ce)
         #train_step = tf.train.GradientDescentOptimizer(0.5).minimize(c3)
         self.sess = tf.InteractiveSession()
         tf.global_variables_initializer().run()
@@ -211,7 +209,7 @@ class FilterTrain():
         data_noise=func.AddNoise(0.2)
         #print(sess.run(tf.shape(c2), feed_dict={x: data_noise, y: data,kp_prb:0.5}))
         
-        for itr in range(1000):
+        for itr in range(2000):
             if(itr%2!=7):
                 data=func.GenWave(3)
                 data_noise=func.AddNoise(0.0)
@@ -321,14 +319,14 @@ class GenDataErr():
         noise=np.multiply(noise,bl)
         return np.add(self.data,noise)        
         
-batch2 = GenDataErr([50,TN])
-data,nzdata=batch2.GenWave(5)
-data_noise=batch2.AddNoise(0.1)
+batch2 = GenData([50,TN])
+data=batch2.GenWave(5)
+data_noise=batch2.AddNoise(0.0)
 
 
 
 bb=GenData()
-flt2=FilterTrain(bb,nzdata)
+flt2=FilterTrain(bb,data_noise)
 outdata=flt2.outdata
 
 """
@@ -353,17 +351,17 @@ plt.plot(dt[0],color='orange',lw=1,alpha=0.5)
 import matplotlib as mpl
 mpl.style.use('seaborn-darkgrid')
 plt.subplot(411)
-plt.plot(nzdata[1],color='b',lw=1,alpha=0.2)
+plt.plot(data_noise[1],color='b',lw=1,alpha=0.2)
 plt.plot(sig.resample(outdata[1],TN),color='cornflowerblue',lw=3)
 plt.plot(data[1],color='orange',lw=1,alpha=0.5)
 
 plt.subplot(412)
-plt.plot(nzdata[2],color='b',lw=1,alpha=0.2)
+plt.plot(data_noise[2],color='b',lw=1,alpha=0.2)
 plt.plot(sig.resample(outdata[2],TN),color='cornflowerblue',lw=3)
 plt.plot(data[2],color='orange',lw=1,alpha=0.5)
 
 plt.subplot(413)
-plt.plot(nzdata[3],color='b',lw=1,alpha=0.2)
+plt.plot(data_noise[3],color='b',lw=1,alpha=0.2)
 plt.plot(sig.resample(outdata[3],TN),color='cornflowerblue',lw=3)
 plt.plot(data[3],color='orange',lw=1,alpha=0.5)
 
