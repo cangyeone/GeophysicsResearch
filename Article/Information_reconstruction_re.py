@@ -101,13 +101,8 @@ class Article():
 
         
 if __name__ == '__main__':
-    #inFile=input('输入文件名：')
-    #outFile=input('输出excel文件名：')
-    inFile='a.txt'
-    outFile='out.xls'
+    inFile=input('输入文件名：')
+    outFile=input('输出excel文件名：')
     art=Article(inFile,outFile)
-    #art=Article(TestMode=True)
-    #print(art.autofill('3D高阶抛物Radon变换地震数据保幅重建'))
-    #print(art.autofill('Twin enigmatic microseismic sources in the Gulf of Guinea observed on intercontinental seismic stations'))
-
+ 
 

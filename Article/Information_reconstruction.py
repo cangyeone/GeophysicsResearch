@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 12 18:17:46 2017
-
-@author: LLL
-"""
-
-# -*- coding: utf-8 -*-
-"""
 Created on Wed Apr 12 08:48:49 2017
 
 @author: Cangye@hotmail.com
@@ -95,8 +88,5 @@ if __name__ == '__main__':
     outFile=input('输出文件名：')
     driv=webdriver.PhantomJS(executable_path='./bin/phantomjs.exe')
     art=Article(inFile,outFile,driver=driv)
-    art.complete()
-    #print(art.autofill('3D高阶抛物Radon变换地震数据保幅重建'))
-    #print(art.autofill('Twin enigmatic microseismic sources in the Gulf of Guinea observed on intercontinental seismic stations'))
 
-
+  
