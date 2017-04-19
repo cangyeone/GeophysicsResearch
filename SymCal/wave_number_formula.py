@@ -272,8 +272,12 @@ class Formula():
         mtE=Matrix(egv[0][2][0].transpose())
         for itr in range(1,nm2-1):
             mtE=mtE.row_insert(itr,egv[itr][2][0].transpose())
-        pprint(mat)
-        pprint(mtE)
+        file=open("formula.txt","w")
+        file.write(latex(simplify(mat)))
+        file.write("\n\n")
+        file.write(latex(simplify(mtE)))
+        pprint(simplify(mat))
+        pprint(simplify(mtE))
     def get_method(self):
         return self.ms
        
