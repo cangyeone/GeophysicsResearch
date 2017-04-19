@@ -4,3 +4,8 @@
 *.z
 *.zip
 *.log
+*.exe
+*.toc
+*.dll
+*.pkg
+*.pyd
