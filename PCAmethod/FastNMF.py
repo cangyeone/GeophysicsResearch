@@ -328,11 +328,21 @@ class MainWindow(QWidget):
         #self.update_rule10()
         #self.timer = None
 
-    def save_file():
-        fileName, ok2=QFileDialog.getSaveFileName("文件保存",  
+    def save_file(self):
+        fileName, ok2=QFileDialog.getSaveFileName(self,
+                                    "文件保存",  
                                     os.getcwd(),  
-                                    "All Files (*);;Excel Files (*.xlsx)")
-    
+                                    "All Files (*);;Excel Files (*.xls)")
+        import xlwt
+        f=xlwt.Workbook()
+        sheet1=f.add_sheet(u'sheet1',cell_overwrite_ok=True)
+        row0=self.title
+        for i in range(0,len(row0)):
+            sheet1.write(0,i,row0[i])
+        for itrx in range(len(self.array)):
+            for itry in range(len(self.array[0])):
+                sheet1.write(itry+1,itrx,self.array[itrx,itry])
+        f.save(fileName)
     def get_file(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,  
                                     "选取文件",  
@@ -342,6 +352,7 @@ class MainWindow(QWidget):
         self.data_orig=self.my_nmf.data_orig
         self.for_sta=self.my_nmf.for_sta
         self.title=self.my_nmf.title
+        self.array=self.my_nmf.array
         self.count=0
     def do_next(self):
         self.count=self.count+1
@@ -369,8 +380,6 @@ class MainWindow(QWidget):
         self.timer.start()
 
     def up_date(self,data_orig,for_sta,title):
-      
-        
         self.axes.clear()
         z1= np.polyfit(data_orig,for_sta,1)        
         
@@ -379,7 +388,7 @@ class MainWindow(QWidget):
         idtv=ma-mi
         x=np.arange(0,ma,0.01)
         #self.axes.title("$"+str(self.title)+"$")
-        cof=self.pearson(data_orig,self.for_sta)
+        cof=self.pearson(data_orig,for_sta)
 
             #plt.text(mi/1.9+ma/1.9,idtv*0.05,)   
         self.axes.plot(x,x*z1[0]+z1[1],alpha=0.5)
