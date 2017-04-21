@@ -27,7 +27,7 @@ class NavToolbar(NavigationToolbar):
     toolitems = [('Save', 'Save the figure', 'filesave', 'save_figure')]
 
 class SourceMethod():
-    def __init__(self, name, rg=[1,8], err=0.1, method='pca'):
+    def __init__(self, name,itrN, rg=[1,8], err=0.1, method='pca'):
         import xlrd
         #print(name)
         wb = xlrd.open_workbook(name)
@@ -43,6 +43,7 @@ class SourceMethod():
         self.dest_err=err
         self.data_max=np.transpose([np.max(np.abs(self.data_orig),axis=1)])
         self.data=np.divide(self.data_orig,self.data_max)
+        self.itrN=itrN
         self.train()       
     def func():
         None
@@ -53,6 +54,8 @@ class SourceMethod():
             self.array=self.method.fit_transform(self.data)
             err=np.mean(np.abs(self.data-np.dot(self.array,self.method.components_)))
             if(err<data_avg*self.dest_err):
+                break
+            if(itr>self.itrN):
                 break
         self.for_sta=np.multiply(np.abs(np.dot(self.array,self.method.components_)),self.data_max)
     def get_par(self):  
@@ -273,13 +276,19 @@ class MainWindow(QWidget):
             ruleLayout.addWidget(QLabel("{0:03b}".format(i)), 0, 7-i)
             ruleLayout.addWidget(ruleEdit, 1,7-i)
             self.ruleEdits.append(ruleEdit)
+        self.fumla=QLineEdit()
+
+        fumlaLayout = QHBoxLayout()
+        fumlaLayout.addWidget(QLabel("Formula:"))
+        fumlaLayout.addWidget(self.fumla)
+
 
         validator2 = QIntValidator(0,255)
         self.rule10Edit = QLineEdit()
+        self.rule10Edit.setText("6")
         self.rule10Edit.setValidator(validator2)
-        #self.rule10Edit.textEdited.connect(self.update_rule10)
         rule10Layout = QHBoxLayout()
-        rule10Layout.addWidget(QLabel("Rule"))
+        rule10Layout.addWidget(QLabel("Number"))
         rule10Layout.addWidget(self.rule10Edit)
 
         conLayout = QHBoxLayout()
@@ -292,6 +301,8 @@ class MainWindow(QWidget):
         self.resetButton.clicked.connect(self.get_file)
         self.randomInitButton = QPushButton("&Plot")
         self.randomInitButton.clicked.connect(self.plot)
+        self.calButton = QPushButton("&Calcaute")
+        self.calButton.clicked.connect(self.calcaute)
         self.nextButton = QPushButton("&Next")
         self.nextButton.clicked.connect(self.do_next)
         self.prevButton = QPushButton("&Save Excel")
@@ -302,11 +313,17 @@ class MainWindow(QWidget):
         #self.stopButton.clicked.connect(self.stop)
         buttonLayout = QVBoxLayout()
         buttonLayout.addWidget(self.resetButton)
+        buttonLayout.addLayout(rule10Layout)
+        buttonLayout.addWidget(self.calButton)
         buttonLayout.addWidget(self.randomInitButton)
         buttonLayout.addWidget(self.nextButton)
         buttonLayout.addWidget(self.prevButton)
         #buttonLayout.addWidget(self.autoButton)
         #buttonLayout.addWidget(self.stopButton)
+
+
+        
+
 
         propertyLayout = QVBoxLayout()
         propertyLayout.setAlignment(Qt.AlignTop)
@@ -315,6 +332,7 @@ class MainWindow(QWidget):
         propertyLayout.addLayout(buttonLayout)
         graphLayer = QVBoxLayout()
         graphLayer.addWidget(self.canvas)
+        graphLayer.addLayout(fumlaLayout)
         graphLayer.addWidget(self.scntb)
         mainLayout = QHBoxLayout()
         mainLayout.setAlignment(Qt.AlignTop)
@@ -337,22 +355,30 @@ class MainWindow(QWidget):
         f=xlwt.Workbook()
         sheet1=f.add_sheet(u'sheet1',cell_overwrite_ok=True)
         row0=self.title
-        for i in range(0,len(row0)):
-            sheet1.write(0,i,row0[i])
+        sheet1.write(0,0,"sources:")
+        sheet1.write(0,1,len(self.array[0]))
+        for i in range(2,len(row0)):
+            sheet1.write(2,i,row0[i])
         for itrx in range(len(self.array)):
             for itry in range(len(self.array[0])):
-                sheet1.write(itry+1,itrx,self.array[itrx,itry])
+                sheet1.write(itry+4,itrx,self.array[itrx,itry])
+        for itrx in range(len(self.odt)):
+            for itry in range(len(self.odt[0])):
+                sheet1.write(itry+len(self.array[0])+6,itrx,self.odt[itrx,itry])
         f.save(fileName)
-    def get_file(self):
-        fileName, filetype = QFileDialog.getOpenFileName(self,  
-                                    "选取文件",  
-                                    os.getcwd(),  
-                                  "All Files (*);;Excle Files (*.xlsx)")
-        self.my_nmf=SourceMethod(fileName)
+    def calcaute(self):
+        self.my_nmf=SourceMethod(self.fileName,int(self.rule10Edit.text()))
         self.data_orig=self.my_nmf.data_orig
         self.for_sta=self.my_nmf.for_sta
         self.title=self.my_nmf.title
         self.array=self.my_nmf.array
+        self.odt=self.my_nmf.method.components_
+    def get_file(self):
+        self.fileName, filetype = QFileDialog.getOpenFileName(self,  
+                                    "选取文件",  
+                                    os.getcwd(),  
+                                  "All Files (*);;Excle Files (*.xlsx)")
+
         self.count=0
     def do_next(self):
         self.count=self.count+1
@@ -394,7 +420,8 @@ class MainWindow(QWidget):
         self.axes.plot(x,x*z1[0]+z1[1],alpha=0.5)
         self.axes.scatter(data_orig,for_sta,alpha=0.5)
         self.axes.text(mi/1.8+ma/1.8,idtv*0.8,"$"+str(title)+"$")
-        self.axes.text(mi/6+ma/6,idtv*0.001,"$f(x)=%fx+%f;cof=%f$"%(z1[0],z1[1],cof))
+        #self.axes.text(mi/6+ma/6,idtv*0.001,"$f(x)=%fx+%f;cof=%f$"%(z1[0],z1[1],cof))
+        self.fumla.setText("f(x)=%fx+%f;cof=%f"%(z1[0],z1[1],cof))
         self.canvas.draw()
     def no_data(self):
         t = arange(0.0, 3.0, 0.01)
