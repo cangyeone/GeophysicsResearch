@@ -22,10 +22,48 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 import numpy as np
 from sklearn.decomposition import PCA,FastICA,NMF
-# customize navigation toolbar
 class NavToolbar(NavigationToolbar):
     toolitems = [('Save', 'Save the figure', 'filesave', 'save_figure')]
 
+                 
+def mynmf(V, r, k, e):
+    m, n = np.shape(V)
+    W = np.random.random([m, r])
+    H = np.random.random([r, n])
+    H_sum=np.sum(H,axis=0)
+    H = np.divide(H,H_sum)
+    for x in range(k):
+        #error 
+        V_pre = np.dot(W,H)
+        E =np.subtract(V,V_pre)
+        #print E
+        err = np.sum(np.square(E))
+        
+        if err < e:
+            break
+        a = np.dot(np.transpose(W),V)
+        b = np.dot(np.dot(np.transpose(W),W),H)
+        #c = V * H.T
+        #d = W * H * H.T
+        
+        H=np.divide((H*a),b)
+        H_sum=np.sum(H,axis=0)
+        H = np.divide(H,H_sum)
+        #for i_1 in range(r):
+         #   for j_1 in range(n):
+          #      if b[i_1,j_1] != 0:
+           #         H[i_1,j_1] = H[i_1,j_1] * a[i_1,j_1] / b[i_1,j_1]
+        c = np.dot(V,np.transpose(H))
+        d = np.dot(W,np.dot(H,np.transpose(H)))
+        W=np.divide(W*c,d)
+        """
+        for i_2 in range(m):
+            for j_2 in range(r):
+                if d[i_2, j_2] != 0:
+                    W[i_2,j_2] = W[i_2,j_2] * c[i_2,j_2] / d[i_2, j_2]
+        """
+    return W,H
+                 
 class SourceMethod():
     def __init__(self, name,itrN, rg=[1,8], err=0.1, method='pca'):
         import xlrd
@@ -33,7 +71,7 @@ class SourceMethod():
         wb = xlrd.open_workbook(name)
         st = wb.sheet_by_index(0)
         self.xlsdata = []
-        for itr in range(st.nrows-2):
+        for itr in range(st.nrows):
             self.xlsdata.append((st.row_values(itr)))
         self.rdata = []
         self.sample=[]
@@ -47,17 +85,18 @@ class SourceMethod():
         self.data_max=np.transpose([np.max(np.abs(self.data_orig),axis=1)])
         self.data=np.divide(self.data_orig,self.data_max)
         self.minus=np.transpose([np.divide(self.orig_data[:,10],np.abs(self.data_orig[:,10]))])
-        print(self.minus)
-        print(self.data_max)
         self.itrN=itrN
         self.train()       
     def func():
         None
     def train(self):
         data_avg=np.average(self.data)
+        data_min=np.transpose([np.min(np.abs(self.data),axis=1)])
+        data_sub=np.subtract(self.data,0.5*data_min)
         for itr in range(1,len(self.data)):
             self.method=NMF(n_components=itr)
-            self.array=self.method.fit_transform(self.data)
+            self.array=self.method.fit_transform(data_sub)
+            self.array=np.add(self.array,data_min*0.5/itr)
             err=np.mean(np.abs(self.data-np.dot(self.array,self.method.components_)))
             if(err<data_avg*self.dest_err):
                 break
@@ -214,7 +253,7 @@ class MainWindow(QWidget):
             self.sample=self.my_nmf.sample
             self.count=0
         except:
-            self.no_data()
+            self.no_data
     def get_file(self):
         self.fileName, filetype = QFileDialog.getOpenFileName(self,  
                                     "选取文件",  
@@ -279,13 +318,16 @@ class MainWindow(QWidget):
         self.err.setText(str(cof))
         self.canvas.draw()
     def up_date_box(self):
-        self.axes.clear()
-        #plt.text(mi/1.9+ma/1.9,idtv*0.05,)   
-        self.axes.boxplot(np.transpose(self.data_orig-self.for_sta))
-        self.fumla.setText("None")
-        self.element.setText("None")
-        self.err.setText("None")
-        self.canvas.draw()
+        try:
+            self.axes.clear()
+            #plt.text(mi/1.9+ma/1.9,idtv*0.05,)   
+            self.axes.boxplot(np.transpose(self.data_orig-self.for_sta))
+            self.fumla.setText("None")
+            self.element.setText("None")
+            self.err.setText("None")
+            self.canvas.draw()
+        except:
+            self.no_data()
     def no_data(self):
         t = arange(0.0, 3.0, 0.01)
         s = sin(2*pi*t)

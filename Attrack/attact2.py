@@ -20,7 +20,7 @@ track3 = odeint(lorenz, (6, 0, 0), t, args=(42,55,1.833,0.16,0.65,20))
 # 绘图
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt 
-
+plt.xkcd()
 fig = plt.figure()
 ax = Axes3D(fig)
 ax.plot(track1[:,0], track1[:,1], track1[:,2],color='cornflowerblue',lw=2,alpha=0.5)

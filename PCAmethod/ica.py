@@ -36,7 +36,8 @@ class SourceMethod():
         print(np.shape(self.method.components_))
     def plot_sta(self):
         import matplotlib.pyplot as plt
-        plt.style.use('bmh')
+        plt.xkcd()
+        #plt.style.use('bmh')
         tick=np.arange(len(self.array))
         width=0.6/len(self.array[0])
         cont=0
