@@ -79,7 +79,11 @@ class SourceMethod():
         data_sub=np.subtract(self.data,base*data_min)
         #print(np.shape(data_min))
         for itr in range(1,len(self.data)):
+            itr=3
             self.components_,self.array=mynmf(data_sub,itr,self.itrN,self.dest_err)
+            self.method=FastICA(n_components=itr)
+            self.array=np.transpose(self.method.fit_transform(np.transpose(data_sub)))
+            self.components_=self.method.mixing_
             self.array=np.add(self.array,data_min*base/itr)
             #err=np.mean(np.abs(self.data-np.dot(self.components_,self.array)))
             self.for_sta=np.multiply(np.abs(np.dot(self.components_,self.array)),self.data_max)
@@ -92,8 +96,8 @@ class SourceMethod():
             print(sum_cof)
             if(self.dest_err>1-sum_cof):
                 break
-            #if(itr>2):
-                #break
+            if(itr>10):
+                break
         #self.for_sta=np.multiply(np.abs(np.dot(self.components_,self.array)),self.data_max)
         self.array=np.multiply(self.array,self.data_max)
         
@@ -209,9 +213,9 @@ class test():
                 sheet2.write(itry,0,self.sample[itry+1])
                 for itrx in range(len(out_data3[0])):
                     sheet2.write(itry,itrx+1,out_data3[itry,itrx])
-            f.save("a.xls")
+            f.save("aa.xls")
     def calcaute(self):
-            self.my_nmf=SourceMethod("data.xlsx",int(500),err=1)
+            self.my_nmf=SourceMethod("data1.xls",int(500),err=1)
             self.data_orig=self.my_nmf.data_orig
             self.for_sta=self.my_nmf.for_sta
             self.title=self.my_nmf.title
@@ -223,7 +227,7 @@ class test():
 if __name__=="__main__":
     data1=np.array([[157,179,117],[49,-237,210],[19504,19503,19971],[2946,3002,2837]])
     data2=np.array([[-1, -1], [-2, -1], [-3, -2], [1, 1], [2, 1], [3, 2]])
-    excel_file=GetExcel("data.xlsx")
+    excel_file=GetExcel("data1.xls")
     data=excel_file.get_data([1,9])
     data=np.abs(np.transpose(data[1:]))
     #re=np.dot(W,H)

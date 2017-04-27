@@ -318,7 +318,7 @@ class MainWindow(QWidget):
                                     "选取文件",  
                                     os.getcwd(),  
                                   "All Files (*);;Excle Files (*.xlsx)")
-
+        self.no_data()
         self.count=0
     def do_next(self):
         self.count=self.count+1
