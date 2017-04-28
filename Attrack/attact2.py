@@ -5,8 +5,12 @@ Created on Fri Apr  1 10:44:43 2016
 @author: Q
 """
 
-from scipy.integrate import odeint 
-import numpy as np 
+import matplotlib.pyplot as plt
+import numpy as np
+# ��ͼ
+from mpl_toolkits.mplot3d import Axes3D
+from scipy.integrate import odeint
+
 
 def lorenz(w,t,a1,a2,a3,a4,a5,a6): 
     x, y, z = w
@@ -17,9 +21,6 @@ t = np.arange(0, 3, 0.001) # 创建时间点
 track1 = odeint(lorenz, (1.1, 0, 0.0), t, args=(40,55,1.833,0.16,0.65,20)) 
 track2 = odeint(lorenz, (4, 0, 0), t, args=(41,55,1.833,0.16,0.65,20)) 
 track3 = odeint(lorenz, (6, 0, 0), t, args=(42,55,1.833,0.16,0.65,20)) 
-# 绘图
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt 
 plt.xkcd()
 fig = plt.figure()
 ax = Axes3D(fig)

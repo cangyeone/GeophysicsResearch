@@ -59,13 +59,14 @@ def gen_data():
 y,H,origx=gen_data()
 m=90
 n=200
+#H= np.random.normal(0,1./np.sqrt(m),(m,n))
 x,r=re_build(y,200,30,H)
-print("Compressed signal is:")
-print(y)
-print("Gauss random Matrix is:")
-print(H)
+#print("Compressed signal is:")
+#print(y)
+#print("Gauss random Matrix is:")
+#print(H)
 print("rebuild signal:")
-print(x)
+print(x-origx)
 
 
 
