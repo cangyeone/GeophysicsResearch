@@ -5,11 +5,12 @@ Created on Wed Apr 12 08:48:49 2017
 @author: Cangye@hotmail.com
 """
 
-import urllib
+#import urllib2
 from bs4 import BeautifulSoup
 import xlwt
 from selenium import webdriver
 import os
+import imghdr
 import time
 from selenium.webdriver.common.keys import Keys 
 class Article():
@@ -22,7 +23,7 @@ class Article():
             return(itr.string)
     
     def get_article(self,soup):
-        for ctc in soup.find_all(['h1','h2','h3','h4','p','li']):
+        for ctc in soup.find_all(['h1','h2','h3','h4','p','li','img']):
             if(ctc.string!=None):
                 if(ctc.name=='h2'):
                     try:
@@ -44,7 +45,22 @@ class Article():
                         self.file.write("* "+ctc.string+"\n")
                     except:
                         None
+                if(ctc.name=='img'):
+                    src=ctc.get('src')
+                    print(src)
             else:
+                if(ctc.name=='img'):
+                    src=ctc.get('src')
+                    cc=src.find("images")
+                    name=src.split('/')[-1]
+                    #print(name)
+                    content=self.opener.open(self.url+src[cc:]).read()
+                    #imgtype = imghdr.what('', h=content)
+                    tag='pic/'+name
+                    imgf=open(tag,'wb')
+                    imgf.write(content)
+                    imgf.close()
+                    self.file.write("("+tag+")\n")
                 None
     def digui(self,soup,itrn):
         #print(soup.name)
@@ -99,11 +115,11 @@ class Article():
         for art in self.article:
             print(art)
             if(art[0]==4):
-                self.file.write("# "+art[1])
+                self.file.write("# "+art[1]+"\n")
             elif(art[0]==6):
-                self.file.write("## "+art[1])
+                self.file.write("## "+art[1]+"\n")
             elif(art[0]==7):
-                self.file.write("### "+art[1])
+                self.file.write("### "+art[1]+"\n")
             else:
                 continue
             htmlpage =self.opener.open(self.url+art[2]).read()
