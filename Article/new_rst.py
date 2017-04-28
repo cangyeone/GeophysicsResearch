@@ -12,6 +12,7 @@ from selenium import webdriver
 import os
 import imghdr
 import time
+import urllib
 from selenium.webdriver.common.keys import Keys 
 class Article():
     def __init__(self,inFile=None,outFile=None,driver=None,TestMode=False):
@@ -27,12 +28,14 @@ class Article():
             if(ctc.string!=None):
                 if(ctc.name=='h2'):
                     try:
-                        self.file.write("#### "+ctc.string+"\n")
+                        #self.file.write("#### "+ctc.string+"\n")
+                        self.file.write('\n')
                     except:
                         None
                 if(ctc.name=='h4'):
                     try:
-                        self.file.write("##### "+ctc.string+"\n")
+                        self.file.write(ctc.string+"\n")
+                        self.file.write(":"*len(ctc.string)+"\n")
                     except:
                         None
                 if(ctc.name=='p'):
@@ -56,7 +59,8 @@ class Article():
                     imgf=open(tag,'wb')
                     imgf.write(content)
                     imgf.close()
-                    self.file.write("("+tag+")\n")
+                    #self.file.write("("+tag+")\n")
+                    self.file.write(".. image:: ./"+tag+'\n')
             else:
                 if(ctc.name=='img'):
                     src=ctc.get('src')
@@ -69,7 +73,7 @@ class Article():
                     imgf=open(tag,'wb')
                     imgf.write(content)
                     imgf.close()
-                    self.file.write("!["+ctc.string+"]"+"("+tag+")\n")
+                    self.file.write(".. image:: ./"+tag+'\n')
                 None
     def digui(self,soup,itrn):
         #print(soup.name)
@@ -117,6 +121,7 @@ class Article():
         aside=soup.find(['aside'])
         #sig.
         #self.get_article(article)
+        
         self.get_aside(aside)
         self.gen_article()
         #print(self.article)
@@ -124,11 +129,14 @@ class Article():
         for art in self.article:
             print(art)
             if(art[0]==4):
-                self.file.write("# "+art[1]+"\n")
+                self.file.write(art[1]+"\n")
+                self.file.write("^"*len(art[1])+"\n")
             elif(art[0]==6):
-                self.file.write("## "+art[1]+"\n")
+                self.file.write(art[1]+"\n")
+                self.file.write("-"*len(art[1])+"\n")
             elif(art[0]==7):
-                self.file.write("### "+art[1]+"\n")
+                self.file.write(art[1]+"\n")
+                self.file.write(">"*len(art[1])+"\n")
             else:
                 continue
             htmlpage =self.opener.open(self.url+art[2]).read()
@@ -165,3 +173,4 @@ if __name__ == '__main__':
     art=Article()
 
   
+
