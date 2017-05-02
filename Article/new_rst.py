@@ -129,14 +129,15 @@ class Article():
         for art in self.article:
             print(art)
             if(art[0]==4):
+                self.file.write("=="*len(art[1])+"\n\n")
                 self.file.write(art[1]+"\n")
-                self.file.write("^"*len(art[1])+"\n")
+                self.file.write("=="*len(art[1])+"\n\n")
             elif(art[0]==6):
                 self.file.write(art[1]+"\n")
-                self.file.write("-"*len(art[1])+"\n")
+                self.file.write("=="*len(art[1])+"\n\n")
             elif(art[0]==7):
                 self.file.write(art[1]+"\n")
-                self.file.write(">"*len(art[1])+"\n")
+                self.file.write("--"*len(art[1])+"\n\n")
             else:
                 continue
             htmlpage =self.opener.open(self.url+art[2]).read()

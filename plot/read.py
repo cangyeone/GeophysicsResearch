@@ -28,12 +28,12 @@ class ReadFile():
         cont=0
         for aa in self.get_dir_list(os.getcwd(),suffix='.sec'):
             data.append(self.GetFileData(aa)[2])
-            if(cont>100):
+            if(cont>10):
                 break
             cont += 1
         data=np.transpose(np.array(data))
         print(data)
-        ica = PCA(n_components=8)
+        ica = PCA(n_components=3)
         source = ica.fit_transform(data)  # Reconstruct signals
         #A_ = ica.mixing_
         plt.figure(1)
