@@ -17,3 +17,6 @@
 *.gif
 Article/pic/wxpay.png
 *.hdf5
+PySPH/damp_output/damp.info
+*.npz
+*.msi
