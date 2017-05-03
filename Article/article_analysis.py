@@ -148,6 +148,8 @@ if __name__ == '__main__':
     text = open(outFile,"r").read()  
     text=processChinese(text)
     wc = WordCloud( font_path='./font/叶立群几何体.ttf',#设置字体
+                width=1980,
+                height=1080,
                 background_color="white", #背景颜色
                 max_words=2000,# 词云显示的最大词数
                 #mask=back_coloring,#设置背景图片
