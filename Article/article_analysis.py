@@ -80,7 +80,7 @@ class Article():
                 #print(nexturl)
                 print(itra.string)
                 #needed to be del
-                break
+                #break
                        
     def write2file(self,buf):
         file=open(self.outFile,"w")
@@ -106,10 +106,10 @@ class Article():
 
         
 if __name__ == '__main__':
-    #inFile=input('输入文件名：')
-    #outFile=input('输出文件名：')
-    inFile='a.txt'
-    outFile='out.txt'
+    inFile=input('输入文件名：')
+    outFile=input('输出文件名：')
+    #inFile='a.txt'
+    #outFile='out.txt'
     driv=webdriver.PhantomJS(executable_path='./bin/phantomjs.exe')
     art=Article(inFile,outFile,driver=driv)
     from os import path  
