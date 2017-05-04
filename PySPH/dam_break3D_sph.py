@@ -15,7 +15,7 @@ from pysph.sph.scheme import WCSPHScheme
 dim = 3
 
 dt = 1e-4
-tf = 6.0
+tf = 2.0
 
 # parameter to change the resolution
 dx = 0.02

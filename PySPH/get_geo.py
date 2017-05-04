@@ -9,7 +9,7 @@ from pysph.base.utils import get_particle_array_wcsph, get_particle_array_iisph
 class GetGeo():
     def __init__(self,fileName='srtm_57_06.asc'):
         self.file=open(fileName,'r')
-    def get_data(self,xrange=[101.914,101.953],yrange=[30.841,30.879],xn=100,yn=100):
+    def get_data(self,xrange=[101.90,101.96],yrange=[30.82,30.88],xn=100,yn=100):
         adata=self.file.readlines()
         self.file.close()
         ncols=int(self.get_head_num(adata[0])[1])
@@ -34,6 +34,18 @@ class GetGeo():
         NX=np.linspace(0,xrange[1]-xrange[0]-cell,xn)
         NY=np.linspace(0,xrange[1]-xrange[0]-cell,yn)
         NZ=func(NX,NY)
+
+        import matplotlib.pyplot as plt
+
+        from mpl_toolkits.mplot3d import Axes3D
+        import matplotlib.pyplot as plt 
+
+        fig = plt.figure()
+        ax = Axes3D(fig)
+
+        NNX,NNY=np.meshgrid(NX,NY)
+        ax.plot_wireframe(NNX,NNY,NZ)
+        plt.show()
         return NZ
     def get_head_num(self,st):
         return [aa for aa in st.split(' ') if len(aa)>0]
@@ -111,6 +123,13 @@ class DamBreak3DGeometry(object):
         #ymin, ymax = -cw2 - ghostlims, cw2 + ghostlims
 
         # create all particles
+        #import matplotlib.pyplot as plt
+
+        #from mpl_toolkits.mplot3d import Axes3D
+        #import matplotlib.pyplot as plt 
+
+        #ig = plt.figure()
+        #ax = Axes3D(fig)
         eps = 0.1 * dx
         xx, yy, zz = numpy.mgrid[xmin:xmax+eps:dx,
                                  ymin:ymax+eps:dx,
@@ -154,13 +173,15 @@ class DamBreak3DGeometry(object):
 
         print(obw2,obl2,obh)
         #ax.scatter3D(x,y,z,alpha=0.05)
+        gggx=xmax-xmin
+        gggy=ymax-ymin
         for i in range(x.size):
             xi = x[i]; yi = y[i]; zi = ge[i]-z[i]
 
             # fluid
-            if ( (xmax*0.4 < xi <= xmax*0.7) and \
-                     (-cw2*0.6 < yi < cw2*0.6) and \
-                     (0 < -zi <= 0.2) ):
+            if ( (xmin+gggx*0.4< xi <= xmin+gggx*0.6) and \
+                     (ymin+gggy*0.4< yi < ymin+gggy*0.6) and \
+                     (0 < -zi <= 0.3) ):
                 #ax.scatter3D(xi,yi,zi,alpha=0.5)
                 findices.append(i)
 

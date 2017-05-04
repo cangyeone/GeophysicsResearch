@@ -22,3 +22,4 @@ PySPH/damp_output/damp.info
 *.msi
 *.asc
 PySPH/sph.vtk.gz
+*.info
