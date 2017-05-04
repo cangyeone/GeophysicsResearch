@@ -20,3 +20,5 @@ Article/pic/wxpay.png
 PySPH/damp_output/damp.info
 *.npz
 *.msi
+*.asc
+PySPH/sph.vtk.gz

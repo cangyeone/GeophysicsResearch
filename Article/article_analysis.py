@@ -49,7 +49,8 @@ class Article():
         #print(soup)
         atinfo=[]
         if(len(sig)!=0):
-            atinfo.append(self.getarticleinfo(url))
+            #atinfo.append(self.getarticleinfo(url))
+            self.get_reference(0,url)
         else:
             for divs in soup.find_all('div',class_='sc_content'):
                 for link in divs.find_all('a'):
@@ -60,7 +61,11 @@ class Article():
                         self.get_reference(0,newurl)
         return atinfo
     def get_reference(self,deep,newurl):
-        self.driver.get(newurl)
+        try:
+            self.driver.get(newurl)
+        except:
+            print("err div")
+            return
         if(deep>2):
             return
         time.sleep(0.1)
@@ -75,10 +80,16 @@ class Article():
                 newwd=itra.get("href")
                 nexturl="http://xueshu.baidu.com"+newwd.replace('amp;','')
                 self.Art.append([deep,itra.string])
-                self.get_reference(deep+1,nexturl)
+                try:
+                    self.get_reference(deep+1,nexturl)
+                except:
+                    print("err")
+                    return 
+                if(deep==0):
+                    print(itra.string)
                 #artinfo=self.getarticleinfo(nexturl)
                 #print(nexturl)
-                print(itra.string)
+                #print(itra.string)
                 #needed to be del
                 #break
                        
@@ -151,7 +162,7 @@ if __name__ == '__main__':
                 width=1980,
                 height=1080,
                 background_color="white", #背景颜色
-                max_words=2000,# 词云显示的最大词数
+                #max_words=2000,# 词云显示的最大词数
                 #mask=back_coloring,#设置背景图片
                 #max_font_size=100, #字体最大值
                 random_state=42,
