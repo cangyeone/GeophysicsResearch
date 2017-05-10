@@ -2,13 +2,20 @@ import numpy as np
 from scipy import interpolate
 import numpy
 from numpy import concatenate, where, array
-from pysph.base.utils import get_particle_array_wcsph, get_particle_array_iisph
-
+try:
+    from pysph.base.utils import get_particle_array_wcsph, get_particle_array_iisph
+except:
+    print("Need PySPH,try to download....")
+    import os
+    os.system("pip install pysph")
 
 
 class GetGeo():
     def __init__(self,fileName='srtm_57_06.asc'):
-        self.file=open(fileName,'r')
+        try:
+            self.file=open(fileName,'r')
+        except:
+            print("Try to download SRTM data..")
     def get_data(self,xrange=[101.90,101.96],yrange=[30.82,30.88],xn=100,yn=100):
         adata=self.file.readlines()
         self.file.close()
@@ -264,14 +271,17 @@ class DamBreak3DGeometry(object):
 
         return particles
 import numpy as np
+import os 
+
 if __name__=="__main__":
+    #print(os.getcwd())
     aa=GetGeo()
     aa.get_data()
     dx = 0.1
     nboundary_layers=3
     hdx = 1.2
     rho0 = 1000.0
-
+    
     geom=DamBreak3DGeometry(
             dx=dx, nboundary_layers=nboundary_layers, hdx=hdx, rho0=rho0,
             with_obstacle=False)
