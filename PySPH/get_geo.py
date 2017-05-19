@@ -72,7 +72,7 @@ class DamBreak3DGeometry(object):
         fluid_column_height=0.55, fluid_column_width=1.0, fluid_column_length=1.228,
         obstacle_center_x=2.5, obstacle_center_y=0,
         obstacle_length=0.16, obstacle_height=0.161, obstacle_width=0.4,
-        nboundary_layers=5, with_obstacle=True, dx=0.02, hdx=1.2, rho0=1000.0):
+        nboundary_layers=5, with_obstacle=True, dx=0.05, hdx=1.2, rho0=1000.0):
 
         # save the geometry details
         self.container_width = container_width
@@ -219,7 +219,7 @@ class DamBreak3DGeometry(object):
         # remove duplicates
         #        indices = array(list(set(indices)))
         indices=np.where(ge>z)[0]
-        #print(np.where(ge>z))
+        print(len(indices))
         wa = LongArray(indices.size); wa.set_data(indices)
         boundary = pa.extract_particles(wa)
         boundary.set_name('boundary')
@@ -244,7 +244,8 @@ class DamBreak3DGeometry(object):
 
         nf = fluid.num_real_particles
         nb = boundary.num_real_particles
-
+    
+        
         if self.with_obstacle:
             no = obstacle.num_real_particles
             print("3D dam break with %d fluid, %d boundary, %d obstacle particles"%(nf, nb, no))

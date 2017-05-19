@@ -18,7 +18,7 @@ dt = 1e-4
 tf = 2.0
 
 # parameter to change the resolution
-dx = 0.02
+dx = 0.05
 nboundary_layers=3
 hdx = 1.2
 ro = 1000.0

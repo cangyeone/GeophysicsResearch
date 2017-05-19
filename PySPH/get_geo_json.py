@@ -42,17 +42,6 @@ class GetGeo():
         NY=np.linspace(0,xrange[1]-xrange[0]-cell,yn)
         NZ=func(NX,NY)
 
-        import matplotlib.pyplot as plt
-
-        from mpl_toolkits.mplot3d import Axes3D
-        import matplotlib.pyplot as plt 
-
-        fig = plt.figure()
-        ax = Axes3D(fig)
-
-        NNX,NNY=np.meshgrid(NX,NY)
-        ax.plot_wireframe(NNX,NNY,NZ)
-        plt.show()
         return NZ
     def get_head_num(self,st):
         return [aa for aa in st.split(' ') if len(aa)>0]
@@ -72,7 +61,7 @@ class DamBreak3DGeometry(object):
         fluid_column_height=0.55, fluid_column_width=1.0, fluid_column_length=1.228,
         obstacle_center_x=2.5, obstacle_center_y=0,
         obstacle_length=0.16, obstacle_height=0.161, obstacle_width=0.4,
-        nboundary_layers=5, with_obstacle=True, dx=0.02, hdx=1.2, rho0=1000.0):
+        nboundary_layers=5, with_obstacle=True, dx=0.005, hdx=1.2, rho0=1000.0):
 
         # save the geometry details
         self.container_width = container_width
@@ -220,11 +209,15 @@ class DamBreak3DGeometry(object):
         indices=np.where(ge>z)[0]
         
         #print(np.where(ge>z))
-        file.write("\"solid\":[[%f,%f,%f,%f],"%(x[indices[0]],y[indices[0]],z[indices[0]],7))
+        file.write("\"solid\":[[%f,%f,%f,%f],"%(0,0,3,0))
+        maz=np.max(z)
+        miz=np.min(z)
+        mrg=maz-miz
+        print(len(indices))
         for i in indices[1:-2]:
-            file.write("[%f,%f,%f,%f],"%(x[i],y[i],z[i],7))
+            file.write("[%f,%f,%f,%f],"%(x[i],y[i],z[i],4*(1-(z[i]-miz)/mrg*0.6+0.4)))
         
-        file.write("[%f,%f,%f,%f]]}"%(x[indices[0]],y[indices[0]],z[indices[0]],7))
+        file.write("[%f,%f,%f,%f]]}"%(x[indices[0]],y[indices[0]],z[indices[0]],0))
         file.close()
         wa = LongArray(indices.size); wa.set_data(indices)
         
@@ -286,7 +279,7 @@ if __name__=="__main__":
     #print(os.getcwd())
     aa=GetGeo()
     aa.get_data()
-    dx = 0.1
+    dx = 0.05
     nboundary_layers=3
     hdx = 1.2
     rho0 = 1000.0
@@ -295,4 +288,3 @@ if __name__=="__main__":
             dx=dx, nboundary_layers=nboundary_layers, hdx=hdx, rho0=rho0,
             with_obstacle=False)
     fluid, boundary = geom.create_particles()
-    print(type(fluid))
