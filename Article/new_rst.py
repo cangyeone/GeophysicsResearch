@@ -16,7 +16,7 @@ import urllib
 from selenium.webdriver.common.keys import Keys 
 class Article():
     def __init__(self,inFile=None,outFile=None,driver=None,TestMode=False):
-        self.file=open("test.txt","w")
+        self.file=open("test.txt","w",encoding="utf-8")
         self.autofill()
         print("finish")
     def getarticleinfo(self,soup_t):
@@ -35,16 +35,20 @@ class Article():
                 if(ctc.name=='h4'):
                     try:
                         self.file.write(ctc.string+"\n")
-                        self.file.write(":"*len(ctc.string)+"\n")
+                        self.file.write("^"*len(ctc.string)+"\n")
+                        self.file.write("\n\n")
                     except:
                         None
                 if(ctc.name=='p'):
                     try:
+                        self.file.write("\n")
                         self.file.write(ctc.string+"\n")
+                        self.file.write("\n")
                     except:
                         None
                 if(ctc.name=='li'):
                     try:
+                        #self.file.write("\n")
                         self.file.write("* "+ctc.string+"\n")
                     except:
                         None
@@ -60,7 +64,9 @@ class Article():
                     imgf.write(content)
                     imgf.close()
                     #self.file.write("("+tag+")\n")
+                    self.file.write("\n")
                     self.file.write(".. image:: ./"+tag+'\n')
+                    self.file.write("\n")
             else:
                 if(ctc.name=='img'):
                     src=ctc.get('src')
@@ -73,8 +79,12 @@ class Article():
                     imgf=open(tag,'wb')
                     imgf.write(content)
                     imgf.close()
+                    self.file.write("\n")
                     self.file.write(".. image:: ./"+tag+'\n')
+                    self.file.write("\n")
                 None
+            
+            
     def digui(self,soup,itrn):
         #print(soup.name)
         #print(itrn)
@@ -129,7 +139,6 @@ class Article():
         for art in self.article:
             print(art)
             if(art[0]==4):
-                self.file.write("=="*len(art[1])+"\n\n")
                 self.file.write(art[1]+"\n")
                 self.file.write("=="*len(art[1])+"\n\n")
             elif(art[0]==6):
@@ -144,6 +153,7 @@ class Article():
             soup = BeautifulSoup(htmlpage,'html.parser')
             article=soup.find(['article'])
             self.get_article(article)
+            self.file.write("\n")
     def get_next(self):
         None
     def write2file(self,buf):

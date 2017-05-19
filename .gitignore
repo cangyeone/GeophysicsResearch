@@ -23,3 +23,4 @@ PySPH/damp_output/damp.info
 *.asc
 PySPH/sph.vtk.gz
 *.info
+*.pyz
