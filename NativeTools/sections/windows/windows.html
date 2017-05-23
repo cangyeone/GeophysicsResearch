@@ -1,0 +1,38 @@
+<template class="task-template">
+  <section id="windows-section" class="section js-section u-category-windows">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          Choose Files
+        </h1>
+        <h3>The <code>FILES</code> should be xls, txt and other format.</h3>
+        </div>
+    </header>
+
+    <div class="demo">
+      <div class="demo-wrapper">
+        <button id="new-window-demo-toggle" class="js-container-target demo-toggle-button">From existing file
+          <div class="demo-meta u-avoid-clicks">xls <span class="demo-meta-divider">|</span> txt</div>
+        </button>
+        <div class="demo-box">
+          <div class="demo-controls">
+            <button class="demo-button" id="new-window">FILE DIALOG</button>
+          </div>
+          <h5>History files:</h5>
+          <p><code>Noting</code></p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/windows/create-window')
+      require('./renderer-process/windows/manage-window')
+      require('./renderer-process/windows/using-window-events')
+      require('./renderer-process/windows/frameless-window')
+    </script>
+
+  </section>
+</template>

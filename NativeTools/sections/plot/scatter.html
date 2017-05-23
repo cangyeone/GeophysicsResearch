@@ -1,0 +1,666 @@
+<template class="task-template">
+  <section id="plot_scatter-section" class="section js-section u-category-menu">
+
+    <div class="demo">
+      <div class="demo-wrapper">
+      <h3 id="my_scatter" style="width: 100%;height:730%;"></h3>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/menus/context-menu')
+    </script>
+
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('my_scatter'));
+
+option = {
+    backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+        offset: 0,
+        color: '#f7f8fa'
+    }, {
+        offset: 1,
+        color: '#cdd0d5'
+    }]),
+       title:{
+        text: "Billboard Year End——2007-2016 Top 5",
+        subtext: "By ZBH",
+        top: "top",
+        left: "center"
+    },
+      tooltip: {},
+      legend: [{
+          formatter: function (name) {
+        return echarts.format.truncateText(name, 40, '14px Microsoft Yahei', '…');
+    },
+    tooltip: {
+        show: true
+    },
+          selectedMode: 'false',
+          bottom: 20,
+          data: ['2010', '2011', '2012', '2007', '2008', '2009', '2013', '2014', '2015', '2016', '法学院', '公共管理学院', '卫斯理安学院', '政治与公民教育学院', '旅游学院', '教育学院', '环境科学与工程学院', '化学化工学院', '物理与电子工程学院', '建筑与城市规划学院', '美术与设计学院', '生命科学学院', '体育学院', '音乐舞蹈学院']
+      }],
+      toolbox: {
+        show : true,
+        feature : {
+            dataView : {show: true, readOnly: true},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+      animationDuration: 3000,
+      animationEasingUpdate: 'quinticInOut',
+      series: [{
+          name: 'Billboard Year End——2007-2016 Top 5',
+          type: 'graph',
+          layout: 'force',
+
+          force: {
+              repulsion: 300
+          },
+          data: [{
+              "name": "Billboard Year End——2007-2016 Top 5",
+              // "x": 0,
+              // y: 0,
+              "symbolSize": 70,
+              "draggable": "true",
+              "value": 27
+
+          }, {
+              "name": "2010",
+              "value": 3,
+              "symbolSize": 100,
+              "category": "2010",
+              "draggable": "true"
+          }, {
+              "name": "Tik Tok -Kesha",
+              "symbolSize": 40,
+              "category": "2010",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Need You Now - Lady antebellum",
+              "symbolSize": 30,
+              "category": "2010",
+              "draggable": "true",
+              "value": 2
+          }, {
+              "name": "Hey Soul Sister - Train",
+              "symbolSize": 20,
+              "category": "2010",
+              "draggable": "true",
+              "value": 3
+          }, {
+              "name": "California Gurls - Katy Perry",
+              "symbolSize": 10,
+              "category": "2010",
+              "draggable": "true",
+              "value": 4
+          }, {
+              "name": "OMG - Usher",
+              "symbolSize": 8,
+              "category": "2010",
+              "draggable": "true",
+              "value": 5
+          }, {
+              "name": "2011",
+              "value": 6,
+              "symbolSize": 100,
+              "category": "2011",
+              "draggable": "true"
+          }, {
+              "name": "Rolling In The Deep - Adele",
+              "symbolSize": 40,
+              "category": "2011",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Party Rock Anthem - LMFAO",
+              "symbolSize": 30,
+              "category": "2011",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Fire Work - Katy Perry",
+              "symbolSize": 20,
+              "category": "2011",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "ET - Katy Perry",
+              "symbolSize": 10,
+              "category": "2011",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Give Me Everything - Pitbull",
+              "symbolSize": 8,
+              "category": "2011",
+              "draggable": "true",
+              "value": 1
+
+          }, {
+              "name": "2012",
+              "value": 5,
+              "symbolSize": 100,
+              "category": "2012",
+              "draggable": "true"
+          }, {
+              "name": " Somebody That I Used To Know - Eotye",
+              "symbolSize":  40,
+              "category": "2012",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Call Me Baby - Carly Rae Jepsen",
+              "symbolSize": 30,
+              "category": "2012",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "We Are Young - Fun.",
+              "symbolSize": 20,
+              "category": "2012",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Payphone - Maroon 5",
+              "symbolSize": 10,
+              "category": "2012",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Lights - Ellie Goulding",
+              "symbolSize": 8,
+              "category": "2012",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "2007",
+              "value": 6,
+              "symbolSize": 100,
+              "category": "2007",
+              "draggable": "true"
+          }, {
+              "name": "Irreplaceable- Beyonce",
+              "symbolSize": 40,
+              "category": "2007",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Umbrella - Rihanna",
+              "symbolSize": 30,
+              "category": "2007",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "The Sweet Escape - Gwen stefani",
+              "symbolSize": 20,
+              "category": "2007",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Big Girls Don't cry - Fergie",
+              "symbolSize": 10,
+              "category": "2007",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Buy U A Drank - T-pain",
+              "symbolSize": 8,
+              "category": "2007",
+              "draggable": "true",
+              "value": 1
+
+          }, {
+              "name": "2008",
+              "value": 8,
+              "symbolSize": 100,
+              "category": "2008",
+              "draggable": "true"
+          }, {
+              "name": "Bleeding love - Leona Lewis",
+              "symbolSize": 40,
+              "category": "2008",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "No one - Alicia keys",
+              "symbolSize": 30,
+              "category": "2008",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Lollipop - Lil Wayne",
+              "symbolSize": 20,
+              "category": "2008",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Apologize - Timbaland Feat",
+              "symbolSize": 10,
+              "category": "2008",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "No Air - Jordin Sparks",
+              "symbolSize": 8,
+              "category": "2008",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "2009",
+              "value": 5,
+              "symbolSize": 100,
+              "category": "2009",
+              "draggable": "true"
+          }, {
+              "name": "Boom Boom Pow - Black Eyed Peas",
+              "symbolSize": 40,
+              "category": "2009",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Poker Face - Lady Gaga",
+              "symbolSize": 30,
+              "category": "2009",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Just Dance - Lady Gaga",
+              "symbolSize": 20,
+              "category": "2009",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "I Gotta Feeling - Black Eyed Peas",
+              "symbolSize": 10,
+              "category": "2009",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Right Round - Flo Rida",
+              "symbolSize": 8,
+              "category": "2009",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "2013",
+              "value": 6,
+              "symbolSize": 100,
+              "category": "2013",
+              "draggable": "true"
+          }, {
+              "name": "Gangnam Style - PSY",
+              "symbolSize": 40,
+              "category": "2013",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Thrift shop - Macklemore",
+              "symbolSize": 30,
+              "category": "2013",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Blurred Lines - Robin Thicke",
+              "symbolSize": 20,
+              "category": "2013",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Radioactive - Imagine Dragons",
+              "symbolSize": 10,
+              "category": "2013",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Harlem Shake - Baauer",
+              "symbolSize": 8,
+              "category": "2013",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "2014",
+              "value": 10,
+              "symbolSize": 100,
+              "category": "2014",
+              "draggable": "true"
+          }, {
+              "name": "Happy - Pharrell Williams",
+              "symbolSize": 40,
+              "category": "2014",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Dark House - Katy Perry",
+              "symbolSize": 30,
+              "category": "2014",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "All of me - John Legend ",
+              "symbolSize": 20,
+              "category": "2014",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Fancy - Iggy Azalea",
+              "symbolSize": 10,
+              "category": "2014",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Counting Stars - One Republic",
+              "symbolSize": 8,
+              "category": "2014",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "2015",
+              "value": 6,
+              "symbolSize": 100,
+              "category": "2015",
+              "draggable": "true"
+          }, {
+              "name": "Uptown Funk - Bruno Mars",
+              "symbolSize": 40,
+              "category": "2015",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Thinking Out Loud - Ed sheeran",
+              "symbolSize": 30,
+              "category": "2015",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "See You Again - Charlie Puth",
+              "symbolSize": 20,
+              "category": "2015",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Trap Queen - Fetty Wap",
+              "symbolSize": 10,
+              "category": "2015",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Sugar - Maroon 5",
+              "symbolSize": 8,
+              "category": "2015",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "2016",
+              "value": 6,
+              "symbolSize": 100,
+              "category": "2016",
+              "draggable": "true"
+          }, {
+              "name": "Love Yourself - Justin Bieber",
+              "symbolSize": 40,
+              "category": "2016",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Sorry - Justin Bieber",
+              "symbolSize": 30,
+              "category": "2016",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "One Dance - Drake",
+              "symbolSize": 20,
+              "category": "2016",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Work - Rihanna",
+              "symbolSize": 10,
+              "category": "2016",
+              "draggable": "true",
+              "value": 1
+          }, {
+              "name": "Stressed Out - Twenty One Pilots",
+              "symbolSize": 8,
+              "category": "2016",
+              "draggable": "true",
+              "value": 1
+          }],
+          links: [{
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2010"
+          }, {
+              "source": "2010",
+              "target": "Tik Tok -Kesha"
+          }, {
+              "source": "2010",
+              "target": "Need You Now - Lady antebellum"
+          }, {
+              "source": "2010",
+              "target": "Hey Soul Sister - Train"
+          }, {
+              "source": "2010",
+              "target": "California Gurls - Katy Perry"
+          }, {
+              "source": "2010",
+              "target": "OMG - Usher"
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2011"
+          }, {
+              "source": "2011",
+              "target": "Rolling In The Deep - Adele"
+          }, {
+              "source": "2011",
+              "target": "Party Rock Anthem - LMFAO"
+          }, {
+              "source": "2011",
+              "target": "Fire Work - Katy Perry"
+          }, {
+              "source": "2011",
+              "target": "ET - Katy Perry"
+          }, {
+              "source": "2011",
+              "target": "Give Me Everything - Pitbull"
+
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2012"
+          }, {
+              "source": "2012",
+              "target": " Somebody That I Used To Know - Eotye"
+          }, {
+              "source": "2012",
+              "target": "Call Me Baby - Carly Rae Jepsen"
+          }, {
+              "source": "2012",
+              "target": "We Are Young - Fun."
+          }, {
+              "source": "2012",
+              "target": "Payphone - Maroon 5"
+          }, {
+              "source": "2012",
+              "target": "Lights - Ellie Goulding"
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2007"
+          }, {
+              "source": "2007",
+              "target": "Irreplaceable- Beyonce"
+          }, {
+              "source": "2007",
+              "target": "Umbrella - Rihanna"
+          }, {
+              "source": "2007",
+              "target": "The Sweet Escape - Gwen stefani"
+          }, {
+              "source": "2007",
+              "target": "Big Girls Don't cry - Fergie"
+          }, {
+              "source": "2007",
+              "target": "Buy U A Drank - T-pain"
+
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2008"
+          }, {
+              "source": "2008",
+              "target": "Bleeding love - Leona Lewis"
+          }, {
+              "source": "2008",
+              "target": "No one - Alicia keys"
+          }, {
+              "source": "2008",
+              "target": "Lollipop - Lil Wayne"
+          }, {
+              "source": "2008",
+              "target": "Apologize - Timbaland Feat"
+          }, {
+              "source": "2008",
+              "target": "No Air - Jordin Sparks"
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2009"
+          }, {
+              "source": "2009",
+              "target": "Boom Boom Pow - Black Eyed Peas"
+          }, {
+              "source": "2009",
+              "target": "Poker Face - Lady Gaga"
+          }, {
+              "source": "2009",
+              "target": "Just Dance - Lady Gaga"
+          }, {
+              "source": "2009",
+              "target": "I Gotta Feeling - Black Eyed Peas"
+          }, {
+              "source": "2009",
+              "target": "Right Round - Flo Rida"
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2013"
+          }, {
+              "source": "2013",
+              "target": "Gangnam Style - PSY"
+          }, {
+              "source": "2013",
+              "target": "Thrift shop - Macklemore"
+          }, {
+              "source": "2013",
+              "target": "Blurred Lines - Robin Thicke"
+          }, {
+              "source": "2013",
+              "target": "Radioactive - Imagine Dragons"
+          }, {
+              "source": "2013",
+              "target": "Harlem Shake - Baauer"
+          }, {
+              "source": "2013",
+              "target": "法语"
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2014"
+          }, {
+              "source": "2014",
+              "target": "Happy - Pharrell Williams"
+          }, {
+              "source": "2014",
+              "target": "Dark House - Katy Perry"
+          }, {
+              "source": "2014",
+              "target": "All of me - John Legend "
+          }, {
+              "source": "2014",
+              "target": "Fancy - Iggy Azalea"
+          }, {
+              "source": "2014",
+              "target": "Counting Stars - One Republic"
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2015"
+          }, {
+              "source": "2015",
+              "target": "Uptown Funk - Bruno Mars"
+          }, {
+              "source": "2015",
+              "target": "Thinking Out Loud - Ed sheeran"
+          }, {
+              "source": "2015",
+              "target": "See You Again - Charlie Puth"
+          }, {
+              "source": "2015",
+              "target": "Trap Queen - Fetty Wap"
+          }, {
+              "source": "2015",
+              "target": "Sugar - Maroon 5"
+          }, {
+              "source": "Billboard Year End——2007-2016 Top 5",
+              "target": "2016"
+          }, {
+              "source": "2016",
+              "target": "Love Yourself - Justin Bieber"
+          }, {
+              "source": "2016",
+              "target": "Sorry - Justin Bieber"
+          }, {
+              "source": "2016",
+              "target": "One Dance - Drake"
+          }, {
+              "source": "2016",
+              "target": "Work - Rihanna"
+          }, {
+              "source": "2016",
+              "target": "Stressed Out - Twenty One Pilots"
+          }],
+          categories: [{
+              'name': '2010'
+          }, {
+              'name': '2011'
+          }, {
+              'name': '2012'
+          }, {
+              'name': '2007'
+          }, {
+              'name': '2008'
+          }, {
+              'name': '2009'
+          }, {
+              'name': '2013'
+          }, {
+              'name': '2014'
+          }, {
+              'name': '2015'
+          }, {
+              'name': '2016'
+          }],
+          focusNodeAdjacency: true,
+          roam: true,
+          label: {
+              normal: {
+
+                  show: true,
+                  position: 'top',
+
+              }
+          },
+          lineStyle: {
+              normal: {
+                  color: 'source',
+                  curveness: 0,
+                  type: "solid"
+              }
+          }
+      }]
+  };
+        myChart.setOption(option);
+    </script>
+
+
+
+  </section>
+</template>

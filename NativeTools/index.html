@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="data_plot_function/echarts.min.js"></script>
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/nativize.css">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/about.css">
+  <link rel="stylesheet" href="assets/css/nav.css">
+  <link rel="stylesheet" href="assets/css/section.css">
+  <link rel="stylesheet" href="assets/css/demo.css">
+  <link rel="stylesheet" href="assets/css/github.css">
+
+  <link rel="import" href="sections/plot/plot.html">
+  <link rel="import" href="sections/plot/scatter.html">
+
+
+  <link rel="import" href="sections/about.html">
+  <link rel="import" href="sections/windows/windows.html">
+  <link rel="import" href="sections/windows/crash-hang.html">
+  <link rel="import" href="sections/menus/menus.html">
+  <link rel="import" href="sections/menus/shortcuts.html">
+  <link rel="import" href="sections/native-ui/ex-links-file-manager.html">
+  <link rel="import" href="sections/native-ui/notifications.html">
+  <link rel="import" href="sections/native-ui/dialogs.html">
+  <link rel="import" href="sections/native-ui/tray.html">
+  <link rel="import" href="sections/communication/ipc.html">
+  <link rel="import" href="sections/system/app-sys-information.html">
+  <link rel="import" href="sections/system/clipboard.html">
+  <link rel="import" href="sections/system/protocol-handler.html">
+  <link rel="import" href="sections/media/pdf.html">
+  <link rel="import" href="sections/media/desktop-capturer.html">
+</head>
+<body>
+
+  <nav class="nav js-nav">
+    <header class="nav-header">
+      <h5 class="nav-title">Math World</h5>
+      <h1 class="nav-title"><strong>Data Analysis</strong></h1>
+      
+      <!--<svg class="nav-header-icon"><use xlink:href="assets/img/icons.svg#icon-electron"></use></svg>-->
+    </header>
+
+    <div class="nav-item u-category-windows">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+        FILE AND DATA
+      </h5>
+      <button type="button" id="button-windows" data-section="windows" class="nav-button">GET <em>FILES</em></button>
+      <button type="button" id="button-crash-hang" data-section="crash-hang" class="nav-button">GET <em>DATA</em></button>
+    </div>
+
+    <div class="nav-item u-category-menu">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-system"></use></svg>
+        DATA ANALYSIS
+      </h5>
+      <button type="button" id="button-menus" data-section="menus" class="nav-button">DATA <em>pretreatment</em> </button>
+      <button type="button" id="button-shortcuts" data-section="shortcuts" class="nav-button">DATA <em>mining</em></button>
+    </div>
+
+    <div class="nav-item u-category-native-ui">
+      <h5 class="nav-category">
+        <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-media"></use></svg>
+        PLOT</h5>
+      <button type="button" id="button-ex-links-file-manager" data-section="plot_scatter" class="nav-button"><em>SCATTER</em></button>
+      <button type="button" id="button-notifications" data-section="plot_plot" class="nav-button"><em>LINE</em></button>
+
+    </div>
+    <footer class="nav-footer">
+      <button type="button" id="button-about" data-modal="about" class="nav-footer-button">CANGYE@hotmail.com</button>
+    </footer>
+  </nav>
+
+  <main class="content js-content"></main>
+
+  <script>
+    require('./assets/imports')
+    require('./assets/ex-links')
+    require('./assets/nav')
+    require('./assets/demo-btns')
+    require('./assets/code-blocks')
+    require('./assets/normalize-shortcuts')
+  </script>
+</body>
+</html>

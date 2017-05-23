@@ -27,7 +27,7 @@ def getArray(file,outfile,cont):
     miz=np.min(z)
     mrg=maz-miz    
     for i in range(len(x)):
-        outfile.write("[%f,%f,%f,%f],"%(x[i],y[i],z[i],4*(1-(z[i]-miz)/mrg*0.6+0.4)))
+        outfile.write("[%f,%f,%f,%f],"%(x[i],y[i],z[i],4*(1.6-(z[i]-miz)/mrg*0.4)))
     outfile.write("[%f,%f,%f,%f]]},"%(0,0,0,0))
     
 outfile=open("out.json","w")
@@ -36,11 +36,9 @@ cont=0
 outfile.write("{")
 for itr in mydir:
    cdir=itr[0]
-   print(cdir)
    for cf in itr[2]:
        if(cf[-4:]=="hdf5"):
            try:
-               
                file=h5py.File(cdir+"/"+cf,"r")
                getArray(file,outfile,cont)
                file.close()
