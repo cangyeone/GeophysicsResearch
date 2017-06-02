@@ -25,3 +25,4 @@ PySPH/sph.vtk.gz
 *.info
 *.pyz
 *.pak
+*.gz
