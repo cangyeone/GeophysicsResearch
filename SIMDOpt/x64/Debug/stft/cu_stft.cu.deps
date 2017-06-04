@@ -1,0 +1,321 @@
+D:\Program\/include\cuda_runtime.h
+d:\program\include\host_config.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\sal.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\ConcurrencySal.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vadefs.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\driver_types.h
+d:\program\include\host_defines.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\limits.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stddef.h
+d:\program\include\surface_types.h
+d:\program\include\driver_types.h
+d:\program\include\texture_types.h
+d:\program\include\driver_types.h
+d:\program\include\vector_types.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\library_types.h
+d:\program\include\channel_descriptor.h
+d:\program\include\driver_types.h
+d:\program\include\cuda_runtime_api.h
+d:\program\include\host_defines.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\cuda_device_runtime_api.h
+d:\program\include\driver_types.h
+d:\program\include\host_defines.h
+d:\program\include\host_defines.h
+d:\program\include\vector_types.h
+d:\program\include\cuda_runtime_api.h
+d:\program\include\driver_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\driver_types.h
+d:\program\include\host_defines.h
+d:\program\include\vector_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\vector_types.h
+d:\program\include\vector_functions.hpp
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\vector_types.h
+d:\program\include\common_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\string.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_memory.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_memcpy_s.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\errno.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime_string.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_wstring.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\time.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_wtime.h
+d:\program\include\math_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\math.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdlib.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_malloc.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_search.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_wstdlib.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\cmath
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\yvals.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xkeycheck.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\vcruntime.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\use_ansi.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\math.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xtgmath.h
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xtr1common
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\cstdlib
+d:\program\include\math_functions.hpp
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\math_functions_dbl_ptx3.h
+d:\program\include\math_functions_dbl_ptx3.hpp
+d:\program\include\cuda_surface_types.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\channel_descriptor.h
+d:\program\include\driver_types.h
+d:\program\include\host_defines.h
+d:\program\include\surface_types.h
+d:\program\include\cuda_texture_types.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\channel_descriptor.h
+d:\program\include\driver_types.h
+d:\program\include\host_defines.h
+d:\program\include\texture_types.h
+d:\program\include\device_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\device_functions.hpp
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\device_atomic_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\device_double_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\device_double_functions.hpp
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\sm_20_atomic_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\sm_32_atomic_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\sm_35_atomic_functions.h
+d:\program\include\sm_32_atomic_functions.h
+d:\program\include\sm_60_atomic_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\sm_20_intrinsics.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\sm_30_intrinsics.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\sm_32_intrinsics.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\sm_35_intrinsics.h
+d:\program\include\sm_32_intrinsics.h
+d:\program\include\sm_61_intrinsics.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\device_types.h
+d:\program\include\host_defines.h
+d:\program\include\surface_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\cuda_surface_types.h
+d:\program\include\host_defines.h
+d:\program\include\surface_types.h
+d:\program\include\vector_functions.h
+d:\program\include\vector_types.h
+d:\program\include\texture_fetch_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\cuda_texture_types.h
+d:\program\include\host_defines.h
+d:\program\include\texture_types.h
+d:\program\include\vector_functions.h
+d:\program\include\vector_types.h
+d:\program\include\texture_indirect_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\vector_functions.h
+d:\program\include\surface_indirect_functions.h
+d:\program\include\builtin_types.h
+d:\program\include\device_types.h
+d:\program\include\driver_types.h
+d:\program\include\surface_types.h
+d:\program\include\texture_types.h
+d:\program\include\vector_types.h
+d:\program\include\host_defines.h
+d:\program\include\vector_functions.h
+d:\program\include\device_launch_parameters.h
+d:\program\include\vector_types.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_wstdio.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_stdio_config.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\math.h
+D:\Program\/include\cuda_runtime.h
+D:\Program\/include\cufft.h
+d:\program\include\cuComplex.h
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\math.h
+d:\program\include\vector_types.h
+d:\program\include\driver_types.h
+d:\program\include\library_types.h
+D:\Program\/include\cufftXt.h
+d:\program\include\cudalibxt.h
+D:\Program\/include\cuda_runtime.h
+d:\program\7_cudalibraries\simplecufft\stft\cu_stft.h
+D:\Program\/include\cuda_runtime.h

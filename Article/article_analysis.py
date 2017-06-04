@@ -169,8 +169,11 @@ if __name__ == '__main__':
                 )
     #WordCloud()
     wc.generate(text)  
-    plt.figure()  
-    plt.imshow(wc)  
+    plt.figure() 
+    print(wc)
+    import numpy as np
+    print(np.shape(wc))
+    plt.imshow(wc)
     plt.axis("off")  
     plt.show()  
     wc.to_file(path.join(d, "名称.png")) 

@@ -26,3 +26,8 @@ PySPH/sph.vtk.gz
 *.pyz
 *.pak
 *.gz
+SIMDOpt/simpleCUFFT.cu
+*.sln
+SIMDOpt/simpleCUFFT_vs2015.VC.db
+*.vcxproj
+SIMDOpt/simpleCUFFT_vs2015.vcxproj.filters

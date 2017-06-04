@@ -9,12 +9,11 @@ stream = pread("after/SC.XJI.2008133160000.D.00.BHN.sac")
 stream += pread("after/SC.XJI.2008133160000.D.00.BHZ.sac")
 stream += pread("after/SC.XJI.2008133160001.D.00.BHE.sac")
 stream.detrend()
+stream.plot()
 ptd=[]
-
 for ii in range(2000):
         ptd.append(stream[0].data[ii:ii+1000])
-plt.matshow(ptd)
-plt.show()
+
 
 print(stream[0].stats.starttime)
 print("%d,%d,%d,%d,%d,%d"%(stream[0].stats.sac.nzyear,
@@ -39,5 +38,5 @@ print("%d,%d,%d,%d,%d,%d"%(stream[2].stats.sac.nzyear,
                 stream[2].stats.sac.nzsec,
                 stream[2].stats.sac.nzmsec))
 
-print(stream[2].stats.sac.stla)
-print(stream[2].stats.sac.stlo)
+print(stream[2].stats)
+print(stream[2].stats)
