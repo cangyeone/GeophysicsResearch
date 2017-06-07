@@ -85,10 +85,10 @@ Complex *my_stft(Complex *h_signal, int s_size, int w_lag, int s_len)
 	// CUFFT plan advanced API
 	for (int i = 0; i < x_size; i++)
 	{
-		cufftExecC2C(plan, (cufftComplex *)d_signal+i, (cufftComplex *)d_stft+i*y_size, CUFFT_FORWARD);
+		cufftExecC2C(plan, (cufftComplex *)d_signal+i*w_lag, (cufftComplex *)d_stft+i*y_size, CUFFT_FORWARD);
 	}
 	Complex *h_stft;
-	h_stft = (Complex *)malloc(sizeof(Complex)*stft_size);
+	h_stft = (Complex *)malloc(stft_size);
 	cudaMemcpy(h_stft, d_stft, stft_size,
 		cudaMemcpyDeviceToHost);
 	//Destroy CUFFT context

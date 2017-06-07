@@ -14,7 +14,8 @@
  */
 
 #include "zx_fft.h"
-
+#include <string.h>
+#include <stdlib.h>
 const float sin_tb[] = {  // 精度(PI PI/2 PI/4 PI/8 PI/16 ... PI/(2^k))
 0.000000, 1.000000, 0.707107, 0.382683, 0.195090, 0.098017, 
 0.049068, 0.024541, 0.012272, 0.006136, 0.003068, 0.001534, 
@@ -238,4 +239,30 @@ int ifft_real(TYPE_FFT *x, uint32_t N)
 	}
 
 	return 0;
+}
+
+
+TYPE_FFT *stft_real(TYPE_FFT *h_signal, int s_size, int w_lag, int s_len)
+{
+	
+	// Allocate device memory for signal
+	//int mem_size = sizeof(Complex)*SIGNAL_SIZE;
+	size_t x_size = (int)((s_size - s_len) / w_lag);
+	size_t y_size = s_len;
+	size_t stft_size = sizeof(TYPE_FFT)*x_size*y_size;
+	size_t mem_size = sizeof(TYPE_FFT)*s_size;
+	TYPE_FFT *h_stft;
+	TYPE_FFT t;
+	t.imag = 0;
+	t.real = 1;
+	h_stft = (TYPE_FFT *)malloc(stft_size);
+	// CUFFT plan advanced API
+	for (size_t i = 0; i < x_size; i++)
+	{
+		
+		memcpy(h_stft+i*y_size, h_signal + i,y_size);
+		fft_real(h_stft+i, y_size);
+	}
+
+	return h_stft;
 }

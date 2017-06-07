@@ -20,10 +20,11 @@ extern "C" {
 
 	typedef COMPLEX TYPE_FFT;  /* Define COMPLEX in Config.h */
 
-	extern int fft(TYPE_FFT *x, uint32_t N);
-	extern int fft_real(TYPE_FFT *x, uint32_t N);
-	extern int ifft(TYPE_FFT *x, uint32_t N);
-	extern int ifft_real(TYPE_FFT *x, uint32_t N);
+	int fft(TYPE_FFT *x, uint32_t N);
+	int fft_real(TYPE_FFT *x, uint32_t N);
+	int ifft(TYPE_FFT *x, uint32_t N);
+	int ifft_real(TYPE_FFT *x, uint32_t N);
+	TYPE_FFT *stft_real(TYPE_FFT *h_signal, int s_size, int w_lag, int s_len);
 #ifdef __cplusplus
 }
 #endif
