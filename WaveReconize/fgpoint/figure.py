@@ -25,10 +25,10 @@ class SacFig():
     def GetData(self,file):
         st=pread(file)
         return st[0].data
-    def __init__(self,staName):
-        self.wlWinN=200
+    def __init__(self,staName,force=False):
+        self.wlWinN=300
         self.wlLagN=10
-        self.fqWinN=200
+        self.fqWinN=300
         self.fqLagN=10
         self.fqRspN=32
         self.wlRspN=32
@@ -38,7 +38,7 @@ class SacFig():
         self.wmg = WeightedMinHashGenerator(self.vectLen,sample_size=2, seed=12)
         self.sta=False
         self.sphs=self.fqLagN*self.wlLagN/100
-        self.GetSta(staName)
+        self.GetSta(staName,force=force)
         #tempdata=self.GetData("D:/Weiyuan/templates/2015318092941.s15.z")
     def GetHash(self):
         self.hash=[]
@@ -51,15 +51,26 @@ class SacFig():
             data=self.FIG(data)
             self.hash.append(data)
         return self.hash
-    def GetHashTofile(self,fileName,outfile):
-        self.dt=[]
-        for fn in fileName:
-            self.dt.append(self.GetData(fn))
-        self.datalen=int((len(self.dt[0])-self.wlLagN*self.wlWinN-self.fqWinN)/self.fqLagN/self.wlLagN)
+    def GetHashTofile(self,fileName,outfile,force=False):
+        ext=[DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC",
+             DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
+             DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC"]
+        dt=[]
+        if(len(self.GetData(fileName[0]))<10000):
+            #print(len(self.GetData(fileName[0])<10000))
+            for fn in range(len(fileName)):
+                ddt=self.GetData(ext[fn])[:10000]
+                cp=len(self.GetData(fileName[fn]))
+                ddt[:cp]=ddt[:cp]+self.GetData(fileName[fn])
+                dt.append(ddt)
+        else:
+            for fn in fileName:
+                dt.append(self.GetData(fn))
+        datalen=int((len(dt[0])-self.wlLagN*self.wlWinN-self.fqWinN)/self.fqLagN/self.wlLagN)
         file=open(outfile,"w")
         step=self.fqLagN*self.wlLagN
-        for itr in range(self.datalen):
-            data=self.STFT(self.dt,itr*step)
+        for itr in range(datalen):
+            data=self.STFT(dt,itr*step)
             data=self.WAVELET(data,3)
             data=self.REGU(data)
             data=self.TRIM(data,self.selmax)
@@ -87,9 +98,12 @@ class SacFig():
             self.sta=True
             return 
         dt_for_sta=np.zeros([4000,self.vectLen])
+        dt=[]
+        for fn in fileName:
+            dt.append(self.GetData(fn))
         for idx in range(4000):
-            dt=self.STFT(self.dt,idx*1000)
-            dt_for_sta[idx,:]=self.WAVELET(dt,3)
+            data=self.STFT(dt,idx*1000)
+            dt_for_sta[idx,:]=self.WAVELET(data,3)
         self.mu   =np.average(dt_for_sta,axis=0)
         self.sigma=np.std(dt_for_sta,axis=0)
         np.savez("stat.out.npz",a=self.mu,b=self.sigma)
@@ -167,28 +181,35 @@ def PrintDT2(file,dt):
         #outFile.write("%f,%d,%d\n"%(sc,a1.hash[it][0],a1.hash[it][1]))
 import threading
 from multiprocessing import Process
-
+from getdir import *
 if __name__ == '__main__':
     bits=2
     import time
-    #scFile=GetSecFile()
-    scFile=[[DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC",
-             DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
-             DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC"],
-             [DIR+"s28/2015337/2015337_00_00_00_s28_BHZ.SAC",
-             DIR+"s28/2015337/2015337_00_00_00_s28_BHN.SAC",
-             DIR+"s28/2015337/2015337_00_00_00_s28_BHE.SAC"],
-             [DIR+"s28/2015338/2015338_00_00_00_s28_BHZ.SAC",
-             DIR+"s28/2015338/2015338_00_00_00_s28_BHN.SAC",
-             DIR+"s28/2015338/2015338_00_00_00_s28_BHE.SAC"]
-             ]
-    a1=SacFig(scFile[0])
+    USEFOR="HASH"
+    if(USEFOR=="HASH"):
+        tag='.hash3'
+        scFile=[[DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC",
+                DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
+                DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC"],
+                [DIR+"s28/2015337/2015337_00_00_00_s28_BHZ.SAC",
+                DIR+"s28/2015337/2015337_00_00_00_s28_BHN.SAC",
+                DIR+"s28/2015337/2015337_00_00_00_s28_BHE.SAC"],
+                [DIR+"s28/2015338/2015338_00_00_00_s28_BHZ.SAC",
+                DIR+"s28/2015338/2015338_00_00_00_s28_BHN.SAC",
+                DIR+"s28/2015338/2015338_00_00_00_s28_BHE.SAC"]
+                ]
+        a1=SacFig(scFile[0],force=False)
+    else:
+        tag="template"
+        scFile=GetTempFiles()
+        a1=SacFig(scFile[0])
     for fileName in scFile:
+        names=fileName[0].split('/')
         #Process(target=a1.GetHashTofile,
-            #args=(fileName,fileName[0][-12:]+".hash")).start()
-
-        a1.GetHashTofile(fileName,fileName[0][-12:]+".hash")
-
+            #args=(fileName,names[2]+names[3]+tag)).start()
+        
+        a1.GetHashTofile(fileName,names[2]+names[3]+tag)
+        #break
 
         
 
