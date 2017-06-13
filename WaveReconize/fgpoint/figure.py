@@ -27,12 +27,12 @@ class SacFig():
         return st[0].data
     def __init__(self,staName,force=False):
         self.wlWinN=300
-        self.wlLagN=10
-        self.fqWinN=300
-        self.fqLagN=10
+        self.wlLagN=5
+        self.fqWinN=200
+        self.fqLagN=5
         self.fqRspN=32
         self.wlRspN=32
-        self.selmax=50
+        self.selmax=15
         self.wl_x_level=3
         self.vectLen=self.fqRspN*self.wlRspN
         self.wmg = WeightedMinHashGenerator(self.vectLen,sample_size=2, seed=12)
@@ -61,11 +61,13 @@ class SacFig():
             for fn in range(len(fileName)):
                 ddt=self.GetData(ext[fn])[:10000]
                 cp=len(self.GetData(fileName[fn]))
+                #ddt[:cp]=ddt[:cp]+np.zeros([cp])
                 ddt[:cp]=ddt[:cp]+self.GetData(fileName[fn])
                 dt.append(ddt)
         else:
             for fn in fileName:
-                dt.append(self.GetData(fn))
+                dt.append(self.GetData(fn)[500000:1000000])
+        #dt=[dt[2]]
         datalen=int((len(dt[0])-self.wlLagN*self.wlWinN-self.fqWinN)/self.fqLagN/self.wlLagN)
         file=open(outfile,"w")
         step=self.fqLagN*self.wlLagN
@@ -113,11 +115,14 @@ class SacFig():
         sumx=np.zeros([self.wlWinN,fqWin])
         tpx=np.zeros([self.wlWinN,self.fqWinN])
         for itx in xx:
-            w = np.hanning(self.fqWinN)
+            w = np.ones([self.fqWinN])
+            #w = np.hanning(self.fqWinN)
+            w[0]=w[1]=0
             tpx[:,:]=np.zeros([self.wlWinN,self.fqWinN])
             for ii in range(self.wlWinN):
                 start=ii*self.fqLagN+idx
                 tpx[ii,:]=itx[start:start+self.fqWinN]*w
+            tpx[:,:]=tpx/np.max(tpx)
             X=scipy.fft(tpx,axis=1)[:,:fqWin]
             X=np.square(np.abs(X))
             sumx=np.add(sumx,X)
@@ -185,34 +190,38 @@ from getdir import *
 if __name__ == '__main__':
     bits=2
     import time
-    USEFOR="HASH"
-    if(USEFOR=="HASH"):
-        tag='.hash3'
-        scFile=[[DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC",
-                DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
-                DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC"],
-                [DIR+"s28/2015337/2015337_00_00_00_s28_BHZ.SAC",
-                DIR+"s28/2015337/2015337_00_00_00_s28_BHN.SAC",
-                DIR+"s28/2015337/2015337_00_00_00_s28_BHE.SAC"],
-                [DIR+"s28/2015338/2015338_00_00_00_s28_BHZ.SAC",
-                DIR+"s28/2015338/2015338_00_00_00_s28_BHN.SAC",
-                DIR+"s28/2015338/2015338_00_00_00_s28_BHE.SAC"]
-                ]
-        a1=SacFig(scFile[0],force=False)
-    else:
-        tag="template"
-        scFile=GetTempFiles()
-        a1=SacFig(scFile[0])
-    for fileName in scFile:
-        names=fileName[0].split('/')
-        #Process(target=a1.GetHashTofile,
-            #args=(fileName,names[2]+names[3]+tag)).start()
-        
-        a1.GetHashTofile(fileName,names[2]+names[3]+tag)
-        #break
+    USEFOR=["HASH","Template"]
+    for useitr in USEFOR:
+        if(useitr=="HASH"):
+            tag='.hash10'
+            scFile=[[DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC",
+                    DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
+                    DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC"],
+                    [DIR+"s28/2015337/2015337_00_00_00_s28_BHE.SAC",
+                    DIR+"s28/2015337/2015337_00_00_00_s28_BHN.SAC",
+                    DIR+"s28/2015337/2015337_00_00_00_s28_BHZ.SAC"],
+                    [DIR+"s28/2015338/2015338_00_00_00_s28_BHE.SAC",
+                    DIR+"s28/2015338/2015338_00_00_00_s28_BHN.SAC",
+                    DIR+"s28/2015338/2015338_00_00_00_s28_BHZ.SAC"]
+                    ][1:2]
+            a1=SacFig(scFile[0],force=True)
+        else:
+            a1=SacFig([DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC",
+                    DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
+                    DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC"],force=False)
+            tag=".template10"
+            scFile=GetTempFiles()
+        for fileName in scFile:
+            names=fileName[0].split('/')
+            #Process(target=a1.GetHashTofile,
+                #args=(fileName,names[2]+names[3]+tag)).start()
+            a1.GetHashTofile(fileName,names[2]+names[3]+tag)
+            print(fileName)
+            #break
 
         
 
     
     
     
+ 

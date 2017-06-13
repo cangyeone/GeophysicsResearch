@@ -37,7 +37,7 @@ class GetDirFile():
             path = itr[0]
             for fileName in itr[2]:
                 if(self.NameFunc(fileName)==True):
-                    yield path+"/"+fileName  
+                    yield path+fileName  
     def GetList(self):
         logDirs=[]
         for itr in self.GetIter():

@@ -26,13 +26,13 @@ class SacFig():
         st=pread(file)
         return st[0].data
     def __init__(self,staName,force=False):
-        self.wlWinN=100
+        self.wlWinN=300
         self.wlLagN=10
         self.fqWinN=300
         self.fqLagN=10
         self.fqRspN=32
         self.wlRspN=32
-        self.selmax=70
+        self.selmax=30
         self.wl_x_level=3
         self.vectLen=self.fqRspN*self.wlRspN
         self.wmg = WeightedMinHashGenerator(self.vectLen,sample_size=2, seed=12)
@@ -65,7 +65,7 @@ class SacFig():
                 dt.append(ddt)
         else:
             for fn in fileName:
-                dt.append(self.GetData(fn))
+                dt.append(self.GetData(fn)[:500000])
         datalen=int((len(dt[0])-self.wlLagN*self.wlWinN-self.fqWinN)/self.fqLagN/self.wlLagN)
         file=open(outfile,"w")
         step=self.fqLagN*self.wlLagN
@@ -113,8 +113,7 @@ class SacFig():
         sumx=np.zeros([self.wlWinN,fqWin])
         tpx=np.zeros([self.wlWinN,self.fqWinN])
         for itx in xx:
-            w = np.ones([self.fqWinN])#np.hanning(self.fqWinN)
-            w[0]=w[1]=w[2]=w[3]=0
+            w = np.hanning(self.fqWinN)
             tpx[:,:]=np.zeros([self.wlWinN,self.fqWinN])
             for ii in range(self.wlWinN):
                 start=ii*self.fqLagN+idx
@@ -186,9 +185,9 @@ from getdir import *
 if __name__ == '__main__':
     bits=2
     import time
-    USEFOR="HASH"
+    USEFOR="HASH1"
     if(USEFOR=="HASH"):
-        tag='.hash8'
+        tag='.hash6'
         scFile=[[DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC",
                 DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
                 DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC"],
