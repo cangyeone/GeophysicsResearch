@@ -17,6 +17,22 @@ import simhash
 import mynilsimsa
 from datasketch import WeightedMinHashGenerator   
 #mpl.style.use('seaborn-darkgrid')
+from getdir import *
+
+class ReadDirFile(GetDirFile):
+    def NameFunc(self,name):
+        if(name=="part_1.s28.2015337.out"):
+            return True
+        return False
+    def GetTime(self):
+        file=open(self.GetList()[0],"r").readlines()
+        time=[]
+        for itr in file:
+            time.append(float([aa for aa in itr.split(" ") if len(aa)>0][1]))
+        return time
+
+
+
 
 DIR = "D:/Weiyuan/"
 CATLOG = "catlog/"
@@ -67,7 +83,7 @@ class SacFig():
                 dt.append(ddt)
         else:
             for fn in fileName:
-                dt.append(self.GetData(fn)[500000:1000000])
+                dt.append(self.GetData(fn))
             l=len(sig[0])
             for aa in range(3):
                 for bb in range(10):
@@ -76,13 +92,30 @@ class SacFig():
         datalen=int((len(dt[0])-self.wlLagN*self.wlWinN-self.fqWinN)/self.fqLagN/self.wlLagN)
         file=open(outfile,"w")
         step=self.fqLagN*self.wlLagN
-        for itr in range(datalen):
-            data=self.STFT(dt,itr*step)
+        times=ReadDirFile("D:/Weiyuan/catlog/").GetTime()
+        print(times)
+        for itr in times[:20]:
+            data=self.STFT(dt,int(itr*100)-100)
+            plt.clf()
+            plt.matshow(data)
+            plt.savefig("figure/fq"+str(itr*step)+".jpg")
+            
+            fig=plt.figure()
+            ax=fig.add_subplot(311)
+            ax.plot(dt[0][int(itr*100):int(itr*100)+1500])
+            ax=fig.add_subplot(312)
+            ax.plot(dt[0][int(itr*100):int(itr*100)+1500])
+            ax=fig.add_subplot(313)
+            ax.plot(dt[0][int(itr*100):int(itr*100)+1500])
+            plt.savefig("figure/wave"+str(itr*step)+".jpg")
             data=self.WAVELET(data,3)
             data=self.REGU(data)
-            
+            plt.clf()
+            plt.matshow(np.reshape(data,
+                        [self.fqRspN,self.wlRspN]))
+            plt.savefig("figure/regu"+str(itr*step)+".jpg")
             data=self.TRIM(data,self.selmax)
-            if((itr*step-100)%50000==0):
+            if(True==True):
                 plt.clf()
                 plt.matshow(np.reshape(data,
                         [self.fqRspN,self.wlRspN]))
@@ -91,7 +124,7 @@ class SacFig():
                 data=self.FIG(data)
             except:
                 data=[0,0]
-            tm=itr*self.sphs
+            tm=itr
             file.write("%f,"%(tm))
             for itr in data:
                 file.write("%d,"%itr)
@@ -126,18 +159,20 @@ class SacFig():
         sumx=np.zeros([self.wlWinN,fqWin])
         tpx=np.zeros([self.wlWinN,self.fqWinN])
         for itx in xx:
-            w = np.ones([self.fqWinN])
-            #w = np.hanning(self.fqWinN)
-            w[0]=w[1]=0
+            #w = np.ones([self.fqWinN])
+            w = np.hanning(self.fqWinN)
+            #w[0:50]=0
             tpx[:,:]=np.zeros([self.wlWinN,self.fqWinN])
             for ii in range(self.wlWinN):
                 start=ii*self.fqLagN+idx
-                tpx[ii,:]=itx[start:start+self.fqWinN]*w
+                tpx[ii,:]=itx[start:start+self.fqWinN]
             tpx[:,:]=tpx/np.max(tpx)
-            X=scipy.fft(tpx,axis=1)[:,:fqWin]
+            X=scipy.fft(tpx,axis=1)
+            X=(X*w)[:,:fqWin]
             X=np.square(np.abs(X))
             sumx=np.add(sumx,X)
         sumx=np.sqrt(sumx)
+        #sumx[:,:5]=0
         sumx=resample(sumx,self.wlRspN,axis=0)
         sumx=resample(sumx,self.fqRspN,axis=1)
         return sumx
@@ -215,7 +250,7 @@ if __name__ == '__main__':
                     DIR+"s28/2015338/2015338_00_00_00_s28_BHN.SAC",
                     DIR+"s28/2015338/2015338_00_00_00_s28_BHZ.SAC"]
                     ][1:2]
-            a1=SacFig(scFile[0],force=True)
+            a1=SacFig(scFile[0],force=False)
         else:
             a1=SacFig([DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC",
                     DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
