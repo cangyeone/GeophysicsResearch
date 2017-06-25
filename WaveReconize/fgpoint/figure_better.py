@@ -117,8 +117,9 @@ class SacFig():
             tpx[:,:]=np.zeros([self.wlWinN,self.fqWinN])
             for ii in range(self.wlWinN):
                 start=ii*self.fqLagN+idx
-                tpx[ii,:]=itx[start:start+self.fqWinN]*w
-            X=scipy.fft(tpx,axis=1)[:,:fqWin]
+                tpx[ii,:]=itx[start:start+self.fqWinN]
+            X=scipy.fft(tpx,axis=1)
+            X=(X*w)[:,:fqWin]
             X=np.square(np.abs(X))
             sumx=np.add(sumx,X)
         sumx=np.sqrt(sumx)

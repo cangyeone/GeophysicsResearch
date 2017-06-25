@@ -1,23 +1,27 @@
-import pywt
-from scipy.signal import resample
+import heapq
 import os
+import threading
+from multiprocessing import Process
+
+import Levenshtein as distance
+#Ϊ�˻�ͼ���ÿ�����ʵ��û��
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import pywt
+import scipy
+import scipy.signal as signal
+from datasketch import WeightedMinHashGenerator
 from obspy import read as pread
 from obspy import Stream
-import numpy as np
-import matplotlib.pyplot as plt
-from pysac import SacStreamIO
-import stft
-import heapq
-import scipy
-#为了画图更好看，其实并没有
-import matplotlib as mpl
-import scipy.signal as signal
-
-import simhash
+from scipy.signal import resample
+from datasketch import MinHash,LeanMinHash
 import mynilsimsa
-from datasketch import WeightedMinHashGenerator   
-#mpl.style.use('seaborn-darkgrid')
+import simhash
+import stft
 from getdir import *
+from pysac import SacStreamIO
+
 
 class ReadDirFile(GetDirFile):
     def NameFunc(self,name):
@@ -41,21 +45,42 @@ class SacFig():
     def GetData(self,file):
         st=pread(file)
         return st[0].data
+    def PlotMat(self,fig,data,name,sp=None):
+        return
+        if(sp!=None):
+            data=np.reshape(data,sp)
+        fig.clf()
+        ax=fig.add_subplot(111)
+        ax.matshow(data)
+        fig.savefig(name)
+    def PlotWave(self,fig,dt,itr,name):
+        return
+        fig.clf()
+        timelen=self.wlWinN*self.fqLagN+self.fqWinN
+        ax=fig.add_subplot(311)
+        ax.plot(dt[0][itr:itr+timelen])
+        ax=fig.add_subplot(312)
+        ax.plot(dt[1][itr:itr+timelen])
+        ax=fig.add_subplot(313)
+        ax.plot(dt[2][itr:itr+timelen])
+        plt.savefig(name)
     def __init__(self,staName,force=False):
-        self.wlWinN=300
+        self.wlWinN=200
         self.wlLagN=5
-        self.fqWinN=200
-        self.fqLagN=5
-        self.fqRspN=32
-        self.wlRspN=32
-        self.selmax=90
+        self.fqWinN=100
+        self.fqLagN=1
+        self.fqRspN=16
+        self.wlRspN=8
+        self.selmax=50
         self.wl_x_level=3
+        self.cycle=0
+        self.num_perm=20
         self.vectLen=self.fqRspN*self.wlRspN
-        self.wmg = WeightedMinHashGenerator(self.vectLen,sample_size=2, seed=12)
+        self.wmg = WeightedMinHashGenerator(self.selmax,sample_size=10, seed=12)
         self.sta=False
         self.sphs=self.fqLagN*self.wlLagN/100
         self.GetSta(staName,force=force)
-        #tempdata=self.GetData("D:/Weiyuan/templates/2015318092941.s15.z")
+        #tempdata=self.GetData("D:/Weiyuan/templates/2---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************015318092941.s15.z")
     def GetHash(self):
         self.hash=[]
         step=self.fqLagN*self.wlLagN
@@ -68,6 +93,9 @@ class SacFig():
             self.hash.append(data)
         return self.hash
     def GetHashTofile(self,fileName,outfile,force=False):
+        ext=[DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC",
+             DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
+             DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC"]
         scFile=GetTempFiles()
         sig=[]
         for itr in scFile[0]:
@@ -83,48 +111,50 @@ class SacFig():
                 dt.append(ddt)
         else:
             for fn in fileName:
-                dt.append(self.GetData(fn))
+                dt.append(self.GetData(fn)[:1000000])
+            """
             l=len(sig[0])
             for aa in range(3):
                 for bb in range(10):
                     dt[aa][bb*50000:bb*50000+l]+=0#sig[aa]
+            """
         #dt=[dt[2]]
         datalen=int((len(dt[0])-self.wlLagN*self.wlWinN-self.fqWinN)/self.fqLagN/self.wlLagN)
         file=open(outfile,"w")
         step=self.fqLagN*self.wlLagN
         times=ReadDirFile("D:/Weiyuan/catlog/").GetTime()
-        print(times)
-        for itr in times[:20]:
-            data=self.STFT(dt,int(itr*100)-100)
-            plt.clf()
-            plt.matshow(data)
-            plt.savefig("figure/fq"+str(itr*step)+".jpg")
+        cyle=0
+        fig=plt.figure()
+        #for itr in times[:10]+[np.random.randint(10000) for aa in range(10)]:
+        for itr in range(datalen):
+            #itr=np.random.randint(10000)
+            data=self.STFT(dt,int(itr*step))
+
+            self.PlotMat(fig,(data),"figure/fq"+str(itr*step)+".jpg")
+            self.PlotWave(fig,dt,int(itr*step),"figure/wave"+str(itr*step)+".jpg")
+            data=self.WAVELET(data,self.wl_x_level)
             
-            fig=plt.figure()
-            ax=fig.add_subplot(311)
-            ax.plot(dt[0][int(itr*100):int(itr*100)+1500])
-            ax=fig.add_subplot(312)
-            ax.plot(dt[0][int(itr*100):int(itr*100)+1500])
-            ax=fig.add_subplot(313)
-            ax.plot(dt[0][int(itr*100):int(itr*100)+1500])
-            plt.savefig("figure/wave"+str(itr*step)+".jpg")
-            data=self.WAVELET(data,3)
+            self.PlotMat(fig,np.log(data),
+                        "figure/wl"+str(itr*step)+".jpg",
+                        [self.wlRspN,self.fqRspN])
+            
             data=self.REGU(data)
-            plt.clf()
-            plt.matshow(np.reshape(data,
-                        [self.fqRspN,self.wlRspN]))
-            plt.savefig("figure/regu"+str(itr*step)+".jpg")
+
+            self.PlotMat(fig,data,
+                        "figure/regu"+str(itr*step)+".jpg",
+                        [self.wlRspN,self.fqRspN])
+            
             data=self.TRIM(data,self.selmax)
-            if(True==True):
-                plt.clf()
-                plt.matshow(np.reshape(data,
-                        [self.fqRspN,self.wlRspN]))
-                plt.savefig("figure/mat"+str(itr*step)+".jpg")
-            try:
-                data=self.FIG(data)
-            except:
-                data=[0,0]
-            tm=itr
+            #continue
+            
+            data=np.array(self.FIG(data))
+            #if(self.cycle==0):
+                #dataold=data
+            #else:
+                #print(len(np.where(data==dataold)[0])/float(self.num_perm))
+                #dataold=data
+            self.cycle+=1
+            tm=itr*step/100
             file.write("%f,"%(tm))
             for itr in data:
                 file.write("%d,"%itr)
@@ -161,7 +191,7 @@ class SacFig():
         for itx in xx:
             #w = np.ones([self.fqWinN])
             w = np.hanning(self.fqWinN)
-            #w[0:50]=0
+            #w[:1]=0
             tpx[:,:]=np.zeros([self.wlWinN,self.fqWinN])
             for ii in range(self.wlWinN):
                 start=ii*self.fqLagN+idx
@@ -177,14 +207,28 @@ class SacFig():
         sumx=resample(sumx,self.fqRspN,axis=1)
         return sumx
     def WAVELET(self,data,level):
-        outdt=pywt.wavedec2(data,'haar',level=level)
-        out=np.zeros([self.vectLen])
-        idx=0
-        for itr in outdt:
-            evaldt=np.reshape(itr,[-1])
-            cit=len(evaldt)
-            out[idx:idx+cit]=evaldt[:]
-            idx+=cit
+        #outdt=pywt.wavedec2(data,'haar',level=level)
+        
+        #out=np.zeros([self.vectLen])
+        #idx=0
+        #out2d=np.zeros([self.wlRspN,self.fqRspN])
+        #lenx,leny=np.shape(outdt[0])
+        #sumx=lenx
+        #sumy=leny
+        #out2d[:leny,:lenx]=outdt[0]
+        #for itr in outdt[1:]:
+        #    lenx,leny=np.shape(itr[0])
+        #    out2d[sumy:sumy+leny,         :lenx]=itr[0]
+        #    out2d[sumy:sumy+leny,sumx:sumx+lenx]=itr[1]
+        #    out2d[         :leny,sumx:sumx+lenx]=itr[2]
+        #    sumx+=lenx
+        #    sumy+=leny
+        #out=np.reshape(out2d,[-1])
+        #"""
+        out=np.concatenate(pywt.wavedec(data,'haar',level=level,axis=1),axis=1)
+        out=np.concatenate(pywt.wavedec(out,'haar',level=level,axis=0),axis=0)
+        out=np.reshape(out,[-1])
+        #"""
         out2=np.sqrt(np.sum(np.square(out)))
         out=np.divide(out,out2)
         return out
@@ -200,46 +244,32 @@ class SacFig():
         lst=np.zeros_like(data)
         for itr in large:
             lst[itr]=data[itr]/absdata[itr]
-        return lst
+
+        rtdata=[]
+        for itr in range(len(lst)):
+            if(lst[itr]==1):
+                rtdata.append("%d"%(itr*2))
+            elif(lst[itr]==-1):
+                rtdata.append("%d"%(itr*2+1))
+        return rtdata
     def FIG(self,tr):
-        wm = self.wmg.minhash(tr) # wm1 is of the type WeightedMinHash
-        vl=np.transpose(wm.hashvalues)
-        vl=vl[0]
-        return(vl.tolist())
+        #wm = self.wmg.minhash(tr) # wm1 is of the type WeightedMinHash
+        #vl=np.transpose(wm.hashvalues)
+        #vl=vl[0]
+        m = MinHash(num_perm=self.num_perm)
+        for d in tr:
+            m.update(d.encode('utf8'))
+        return(m.digest())
             
         
-def PrintDT1(outFile,lgt,hdT):
-    sc=0
-    for it in hdT:
-        sc+=1
-        tm=lgt*sc
-        outFile.write("%f,"%(tm))
-        for itr in it:
-            outFile.write("%d,"%itr)
-        outFile.write("\n")
-        #outFile.write("%f,%d,%d\n"%(sc,a1.hash[it][0],a1.hash[it][1]))
-        
-def PrintDT2(file,dt):
-    sc=0
-    for it in hdT:
-        sc+=1
-        tm=1*sc
-        #outFile.write("%d:%d:%d,"%(int(tm/3600),int((tm%3600)/60),int(tm%60)))
-        outFile.write("%5.1f,"%(it[-1]))
-        for itr in it[:-1]:
-            outFile.write("%d,"%itr)
-        outFile.write("\n")
-        #outFile.write("%f,%d,%d\n"%(sc,a1.hash[it][0],a1.hash[it][1]))
-import threading
-from multiprocessing import Process
-from getdir import *
+
 if __name__ == '__main__':
     bits=2
     import time
     USEFOR=["HASH","Template"]
-    for useitr in USEFOR:
+    for useitr in USEFOR[1:]:
         if(useitr=="HASH"):
-            tag='.hash10'
+            tag='.hash12'
             scFile=[[DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC",
                     DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
                     DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC"],
@@ -250,12 +280,12 @@ if __name__ == '__main__':
                     DIR+"s28/2015338/2015338_00_00_00_s28_BHN.SAC",
                     DIR+"s28/2015338/2015338_00_00_00_s28_BHZ.SAC"]
                     ][1:2]
-            a1=SacFig(scFile[0],force=False)
+            a1=SacFig(scFile[0],force=True)
         else:
             a1=SacFig([DIR+"s28/2015336/2015336_00_00_00_s28_BHE.SAC",
                     DIR+"s28/2015336/2015336_00_00_00_s28_BHN.SAC",
                     DIR+"s28/2015336/2015336_00_00_00_s28_BHZ.SAC"],force=False)
-            tag=".template10"
+            tag=".template12"
             scFile=GetTempFiles()
         for fileName in scFile:
             names=fileName[0].split('/')
@@ -263,12 +293,5 @@ if __name__ == '__main__':
                 #args=(fileName,names[2]+names[3]+tag)).start()
             a1.GetHashTofile(fileName,names[2]+names[3]+tag)
             print(fileName)
-            #break
-        break
+        #break
 
-        
-
-    
-    
-    
- 

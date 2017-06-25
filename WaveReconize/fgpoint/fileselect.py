@@ -10,13 +10,13 @@ TEMPLATES = "templates/"
 class GetHashFile(GetDirFile):
     def NameFunc(self,fileName):
         names=fileName.split(".")
-        if(names[-1]=="hash8"):
+        if(names[-1]=="hash10"):
             return True
         
 class GetTempFile(GetDirFile):
     def NameFunc(self,fileName):
         names=fileName.split(".")
-        if(names[-1]=="template8"):
+        if(names[-1]=="template10"):
             return True
 class IDX():
     def __init__(self,fileName):
@@ -83,7 +83,7 @@ if __name__=="__main__":
     idx=ID.BuildIndex()
     times=[]
     for xx in TP:
-        for yy in xx[6:12]:
+        for yy in xx[4:12]:
             try:
                 if(len(idx[0][yy[1]][yy[2]])>10000):
                     pass

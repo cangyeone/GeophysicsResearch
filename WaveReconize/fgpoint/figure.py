@@ -28,11 +28,11 @@ class SacFig():
     def __init__(self,staName,force=False):
         self.wlWinN=300
         self.wlLagN=5
-        self.fqWinN=200
+        self.fqWinN=300
         self.fqLagN=5
         self.fqRspN=32
         self.wlRspN=32
-        self.selmax=15
+        self.selmax=90
         self.wl_x_level=3
         self.vectLen=self.fqRspN*self.wlRspN
         self.wmg = WeightedMinHashGenerator(self.vectLen,sample_size=2, seed=12)
@@ -117,13 +117,14 @@ class SacFig():
         for itx in xx:
             w = np.ones([self.fqWinN])
             #w = np.hanning(self.fqWinN)
-            w[0]=w[1]=0
+            w[0]=w[0]=0
             tpx[:,:]=np.zeros([self.wlWinN,self.fqWinN])
             for ii in range(self.wlWinN):
                 start=ii*self.fqLagN+idx
-                tpx[ii,:]=itx[start:start+self.fqWinN]*w
+                tpx[ii,:]=itx[start:start+self.fqWinN]
             tpx[:,:]=tpx/np.max(tpx)
-            X=scipy.fft(tpx,axis=1)[:,:fqWin]
+            X=scipy.fft(tpx,axis=1)
+            X=(X*w)[:,:fqWin]
             X=np.square(np.abs(X))
             sumx=np.add(sumx,X)
         sumx=np.sqrt(sumx)

@@ -31,3 +31,7 @@ SIMDOpt/simpleCUFFT.cu
 SIMDOpt/simpleCUFFT_vs2015.VC.db
 *.vcxproj
 SIMDOpt/simpleCUFFT_vs2015.vcxproj.filters
+*.hash10
+WaveReconize/s282015337.hash10
+*.hash10
+*.template10
