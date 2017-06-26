@@ -154,24 +154,8 @@ if __name__=="__main__":
         for yy in lk_h_t[xx]['time']:
             outFile.write("{ \"source\":\"%s\",\"target\":\"time:%.2f\",\"value\":%f },\n"
                         %(xx,yy,1))
-    """
-    for xx in file_cont_pt:
-        cont+=1
-        for yy in idx_pt:
-            try:
-                outFile.write("{ \"source\":\"%s\",\"target\":\"%s\",\"value\":%f },\n"
-                        %("file%d"%(cont),yy,file_cont_pt["file%d"%(cont)][yy]))
-            except:
-                pass
-    for xx in time_cont_pt:
-        for yy in unqtime_pt:
-            try:
-                outFile.write("{ \"source\":\"%s\",\"target\":\"time:%.2f\",\"value\":%f },\n"
-                        %("%s"%(xx),yy,1))
-            except:
-                pass
-    """        
     outFile.seek(outFile.tell()-3)
     outFile.write(']')
     outFile.write('}')
     outFile.close()
+    print(tm)
